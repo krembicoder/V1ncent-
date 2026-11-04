@@ -66,31 +66,92 @@ button.danger:hover{background:#7c3aed!important}
 footer{color:#8a7ba5}
 @media(max-width:650px){.side-brand{min-width:0}.side-brand strong{letter-spacing:.1em}}
 
+.row{display:flex;gap:8px}.row button{white-space:nowrap}
 </style></head>
 <body><div id="app">
-<aside class="sidebar"><div class="side-brand"><div class="side-mark">V1</div><div><strong>V1NCENT</strong><small>GIVEAWAY STUDIO</small></div></div><div class="side-label">РАБОЧЕЕ ПРОСТРАНСТВО</div><nav class="side-nav"><a class="active" href="#dashboard"><span class="nav-ico">▦</span>Обзор</a><a href="#participants"><span class="nav-ico">♙</span>Участники</a><a href="#chat"><span class="nav-ico">▤</span>Чат</a><a href="#winner"><span class="nav-ico">✦</span>Победитель</a><a href="#history"><span class="nav-ico">◷</span>История</a></nav><div class="side-bottom"><b>TWITCH · DEMO</b><p>Подключение канала появится после настройки Twitch API.</p></div></aside>
+<aside class="sidebar"><div class="side-brand"><div class="side-mark">V1</div><div><strong>V1NCENT</strong><small>GIVEAWAY STUDIO</small></div></div><div class="side-label">РАБОЧЕЕ ПРОСТРАНСТВО</div><nav class="side-nav"><a class="active" href="#dashboard"><span class="nav-ico">▦</span>Обзор</a><a href="#participants"><span class="nav-ico">♙</span>Участники</a><a href="#chat"><span class="nav-ico">▤</span>Чат</a><a href="#winner"><span class="nav-ico">✦</span>Победитель</a><a href="#history"><span class="nav-ico">◷</span>История</a></nav><div class="side-bottom"><b>TWITCH · DEMO</b><p>Введи канал в настройках и нажми «Подключить».</p></div></aside>
 <header><div class="brand"><div class="logo">V1</div><div><strong>V1NCENT</strong><small>GIVEAWAY CONTROL CENTER</small></div></div><div class="status"><span class="dot" id="statusDot"></span><span id="connection">ДЕМО-РЕЖИМ · TWITCH НЕ ПОДКЛЮЧЁН</span></div></header>
 <main class="main" id="dashboard">
 <div class="topline"><div class="timer"><span id="clock">05:00</span><small>ДО КОНЦА РОЗЫГРЫША</small></div><div class="controls"><button id="startBtn" class="primary">▶ Запустить</button><button id="pauseBtn">Ⅱ Пауза</button><button id="resetBtn">↻ Сбросить</button><button id="demoBtn">＋ Тест-участник</button></div></div>
 <div class="grid">
 <section class="panel"><div class="panel-head"><h2>УЧАСТНИКИ</h2><span class="counter" id="count">0 участников</span></div><div class="participants" id="participants"><div style="padding:30px 10px;text-align:center;color:#777087;font-size:12px">Пока никого нет. Добавь тестового участника.</div></div></section>
 <section class="panel"><div class="panel-head"><h2>ЧАТ · TWITCH</h2><span class="tag">ЧАТ-КОМНАТА</span></div><div class="chat" id="chat"><div class="msg"><span class="time">22:41</span><div><b>V1ncent</b><p>Чат готов. Здесь будут отображаться сообщения зрителей и входящие участники розыгрыша.</p></div></div></div><div class="chat-input"><input id="chatText" placeholder="Напиши сообщение в демо-чат…"><button class="primary" id="sendBtn">Отправить</button></div></section>
-<section class="panel right" id="winner"><div class="panel-head"><h2>ПОБЕДИТЕЛЬ</h2><span class="tag">RANDOM</span></div><div class="winner"><div class="trophy">🏆</div><h3 id="winnerTitle">Ожидаем победителя</h3><div class="winner-name" id="winnerName"></div><p id="winnerSub">Победитель появится после выбора</p></div><div class="winner-actions"><button class="danger" id="pickBtn">✦ Выбрать победителя</button></div><div class="settings"><div class="field"><label for="keyword">КЛЮЧЕВОЕ СЛОВО</label><input id="keyword" value="участвую"></div><div class="field"><label for="duration">ДЛИТЕЛЬНОСТЬ (МИНУТЫ)</label><input id="duration" type="number" min="1" max="180" value="5"></div><p class="hint">В этой версии участники добавляются вручную или через демо-чат. Для реального Twitch-подключения потребуется OAuth и серверная часть.</p></div></section>
+<section class="panel right" id="winner"><div class="panel-head"><h2>ПОБЕДИТЕЛЬ</h2><span class="tag">RANDOM</span></div><div class="winner"><div class="trophy">🏆</div><h3 id="winnerTitle">Ожидаем победителя</h3><div class="winner-name" id="winnerName"></div><p id="winnerSub">Победитель появится после выбора</p></div><div class="winner-actions"><button class="danger" id="pickBtn">✦ Выбрать победителя</button></div><div class="settings"><div class="field"><label for="channel">КАНАЛ TWITCH</label><div class="row"><input id="channel" placeholder="например, v1ncent" autocomplete="off"><button class="primary" id="connectBtn">Подключить</button></div></div><div class="field"><label for="prize">ПРИЗ</label><input id="prize" placeholder="что разыгрываем"></div><div class="field"><label for="keyword">КЛЮЧЕВОЕ СЛОВО</label><input id="keyword" value="участвую"></div><div class="field"><label for="duration">ДЛИТЕЛЬНОСТЬ (МИНУТЫ)</label><input id="duration" type="number" min="1" max="180" value="5"></div><div class="field"><label for="exclude">ИСКЛЮЧИТЬ НИКИ (ЧЕРЕЗ ЗАПЯТУЮ)</label><input id="exclude" placeholder="боты, модераторы…"></div><p class="hint">Чат читается анонимно, без авторизации. Участники попадают в список, пока идёт таймер. Стример и популярные боты исключены автоматически. Повторное нажатие «Выбрать победителя» выбирает следующего, прошлые победители не повторяются.</p></div></section>
 </div>
-<div class="lower"><section class="panel"><div class="panel-head"><h2>СТАТИСТИКА</h2><span class="counter">ТЕКУЩИЙ РОЗЫГРЫШ</span></div><div class="stats"><div class="stat"><small>УЧАСТНИКОВ</small><b id="statPeople">0</b></div><div class="stat"><small>СООБЩЕНИЙ</small><b id="statMessages">0</b></div><div class="stat"><small>ПОБЕДИТЕЛЕЙ</small><b id="statWinners">0</b></div></div></section><section class="panel"><div class="panel-head"><h2>ИСТОРИЯ ПОБЕДИТЕЛЕЙ</h2><span class="counter">СЕССИЯ</span></div><div class="history" id="history">Победителей пока нет</div></section></div>
-</main><footer>V1ncent — интерактивный макет. Данные сохраняются только пока открыта эта страница. Выбор победителя случаен среди уникальных участников текущего списка.</footer>
+<div class="lower"><section class="panel"><div class="panel-head"><h2>СТАТИСТИКА</h2><span class="counter">ТЕКУЩИЙ РОЗЫГРЫШ</span></div><div class="stats"><div class="stat"><small>УЧАСТНИКОВ</small><b id="statPeople">0</b></div><div class="stat"><small>СООБЩЕНИЙ</small><b id="statMessages">0</b></div><div class="stat"><small>ПОБЕДИТЕЛЕЙ</small><b id="statWinners">0</b></div></div></section><section class="panel"><div class="panel-head"><h2>ИСТОРИЯ ПОБЕДИТЕЛЕЙ</h2><button class="counter" id="exportBtn" style="cursor:pointer;border:0">⬇ CSV</button></div><div class="history" id="history">Победителей пока нет</div></section></div>
+</main><footer>V1ncent — Giveaway Studio. Данные сохраняются в браузере (localStorage). Победитель выбирается случайно (crypto) среди уникальных участников.</footer>
 </div>
 <script>
-const $=id=>document.getElementById(id);let people=[],messages=0,winners=0,seconds=300,tick=null,history=[];
+const $=id=>document.getElementById(id);
+const KEY='v1ncent.giveaway.v1',IDS=['keyword','duration','channel','prize','exclude'];
+const BOTS=['nightbot','streamelements','streamlabs','moobot','fossabot','wizebot'];
 const samples=['pixel_fox','m1racle','nekto_live','vanya_cs','darkwolf','sugarbyte','k0smos','frosty'];
-function render(){ $('count').textContent=people.length+' участников';$('statPeople').textContent=people.length;$('statMessages').textContent=messages;$('statWinners').textContent=winners;const box=$('participants');box.innerHTML=people.length?'':'<div style="padding:30px 10px;text-align:center;color:#777087;font-size:12px">Пока никого нет. Добавь тестового участника.</div>';people.forEach((p,i)=>{const d=document.createElement('div');d.className='person';d.innerHTML=`<div class="avatar">${p.slice(0,2).toUpperCase()}</div><div><b></b><small>В списке · ${p.time}</small></div><span class="num">#${String(i+1).padStart(2,'0')}</span>`;d.querySelector('b').textContent=p.name;box.append(d)});}
-function addPerson(name){name=name.trim().replace(/^@/,'');if(!name)return;if(people.some(p=>p.name.toLowerCase()===name.toLowerCase())){addMessage('СИСТЕМА',name+' уже участвует');return}people.push({name,time:new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})});render();addMessage('СИСТЕМА',name+' добавлен в список участников')}
-function addMessage(user,msg){const d=document.createElement('div');d.className='msg';const time=document.createElement('span');time.className='time';time.textContent=new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});const wrap=document.createElement('div'),b=document.createElement('b'),p=document.createElement('p');b.textContent=user;p.textContent=msg;wrap.append(b,p);d.append(time,wrap);$('chat').append(d);$('chat').scrollTop=$('chat').scrollHeight;}
-function updateClock(){ $('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0') }
-$('startBtn').onclick=()=>{if(tick)return;tick=setInterval(()=>{if(seconds>0){seconds--;updateClock()}else{clearInterval(tick);tick=null;addMessage('V1ncent','Время розыгрыша закончилось. Можно выбирать победителя.')}},1000);addMessage('V1ncent','Розыгрыш запущен! Ключевое слово: '+$('keyword').value)};
-$('pauseBtn').onclick=()=>{clearInterval(tick);tick=null;addMessage('V1ncent','Таймер на паузе')};$('resetBtn').onclick=()=>{clearInterval(tick);tick=null;seconds=Math.max(1,Math.min(180,Number($('duration').value)||5))*60;updateClock();people=[];messages=0;render();addMessage('V1ncent','Список и таймер сброшены')};
-$('demoBtn').onclick=()=>addPerson(samples.find(s=>!people.some(p=>p.name===s))||('viewer_'+Math.floor(Math.random()*9000+1000)));
-$('sendBtn').onclick=()=>{const val=$('chatText').value.trim();if(!val)return;messages++;addMessage('viewer_demo',val);if(val.toLowerCase().includes($('keyword').value.trim().toLowerCase()))addPerson('viewer_demo');$('statMessages').textContent=messages;$('chatText').value=''};$('chatText').addEventListener('keydown',e=>{if(e.key==='Enter')$('sendBtn').click()});
-$('pickBtn').onclick=()=>{if(!people.length){$('winnerTitle').textContent='Нет участников';$('winnerSub').textContent='Добавь хотя бы одного участника';return}const p=people[Math.floor(Math.random()*people.length)];winners++;$('winnerTitle').textContent='Победитель выбран!';$('winnerName').textContent=p.name;$('winnerSub').textContent='Случайный выбор среди '+people.length+' участников';history.unshift(p.name);$('history').innerHTML='';history.forEach((n,i)=>{const d=document.createElement('div');d.textContent='#'+(history.length-i)+' · '+n;$('history').append(d)});$('statWinners').textContent=winners;addMessage('V1ncent','Победитель: '+p.name)};
-updateClock();render();
+let people=[],messages=0,history=[],seconds=300,tick=null,ws=null,wantWs=false,st=null;
+const hhmm=()=>new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+const dur=()=>Math.max(1,Math.min(180,Number($('duration').value)||5));
+function save(){try{localStorage.setItem(KEY,JSON.stringify({people,messages,history,seconds,s:Object.fromEntries(IDS.map(i=>[i,$(i).value]))}))}catch(e){}}
+function saveSoon(){clearTimeout(st);st=setTimeout(save,400)}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;people=d.people||[];messages=d.messages||0;history=d.history||[];if(d.seconds>=0)seconds=d.seconds;IDS.forEach(i=>{if(d.s&&d.s[i]!=null)$(i).value=d.s[i]})}catch(e){}}
+function rnd(n){const a=new Uint32Array(1),lim=Math.floor(4294967296/n)*n;do{crypto.getRandomValues(a)}while(a[0]>=lim);return a[0]%n}
+function render(){
+ $('count').textContent=people.length+' участников';$('statPeople').textContent=people.length;$('statMessages').textContent=messages;$('statWinners').textContent=history.length;
+ const box=$('participants');box.innerHTML='';
+ if(!people.length)box.innerHTML='<div style="padding:30px 10px;text-align:center;color:#777087;font-size:12px">Пока никого нет. Добавь тестового участника.</div>';
+ people.forEach((p,i)=>{const d=document.createElement('div');d.className='person';d.innerHTML='<div class="avatar"></div><div><b></b><small></small></div><span class="num"></span>';d.querySelector('.avatar').textContent=p.name.slice(0,2).toUpperCase();d.querySelector('b').textContent=p.name;d.querySelector('small').textContent='В списке · '+p.time;d.querySelector('.num').textContent='#'+String(i+1).padStart(2,'0');box.append(d)});
+ const h=$('history');h.innerHTML='';if(!history.length)h.textContent='Победителей пока нет';
+ history.forEach((w,i)=>{const d=document.createElement('div');d.textContent='#'+(history.length-i)+' · '+w.name+(w.prize?' · '+w.prize:'')+' · '+w.time;h.append(d)});
+ save();
+}
+function addMessage(user,msg){const d=document.createElement('div');d.className='msg';const t=document.createElement('span');t.className='time';t.textContent=hhmm();const w=document.createElement('div'),b=document.createElement('b'),p=document.createElement('p');b.textContent=user;p.textContent=msg;w.append(b,p);d.append(t,w);const c=$('chat');c.append(d);while(c.children.length>300)c.firstChild.remove();c.scrollTop=c.scrollHeight}
+function addPerson(name,quiet){name=name.trim().replace(/^@/,'');if(!name)return;
+ if(people.some(p=>p.name.toLowerCase()===name.toLowerCase())){if(!quiet)addMessage('СИСТЕМА',name+' уже участвует');return}
+ people.push({name,time:hhmm()});render();if(!quiet)addMessage('СИСТЕМА',name+' добавлен в список участников')}
+function onChat(user,text,live,login){
+ messages++;$('statMessages').textContent=messages;addMessage(user,text);
+ const kw=$('keyword').value.trim().toLowerCase();
+ if(kw&&text.toLowerCase().includes(kw)){
+  if(!live)addPerson(user);
+  else{const ex=[...BOTS,$('channel').value.trim().replace(/^#/,'').toLowerCase(),...$('exclude').value.toLowerCase().split(/[\s,;]+/).map(s=>s.replace(/^@/,''))].filter(Boolean);
+   if(tick&&!ex.includes(login))addPerson(user,true)}
+ }
+ saveSoon();
+}
+function updateClock(){$('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
+$('startBtn').onclick=()=>{if(tick)return;if(seconds<=0){seconds=dur()*60;updateClock()}
+ tick=setInterval(()=>{seconds--;updateClock();saveSoon();if(seconds<=0){clearInterval(tick);tick=null;addMessage('V1ncent','Время розыгрыша закончилось. Можно выбирать победителя.')}},1000);
+ addMessage('V1ncent','Розыгрыш запущен! Ключевое слово: '+$('keyword').value)};
+$('pauseBtn').onclick=()=>{clearInterval(tick);tick=null;addMessage('V1ncent','Таймер на паузе')};
+$('resetBtn').onclick=()=>{clearInterval(tick);tick=null;seconds=dur()*60;updateClock();people=[];messages=0;render();addMessage('V1ncent','Список и таймер сброшены')};
+$('demoBtn').onclick=()=>addPerson(samples.find(s=>!people.some(p=>p.name===s))||('viewer_'+(1000+rnd(9000))));
+$('sendBtn').onclick=()=>{const v=$('chatText').value.trim();if(!v)return;onChat('viewer_demo',v,false);$('chatText').value=''};
+$('chatText').addEventListener('keydown',e=>{if(e.key==='Enter')$('sendBtn').click()});
+$('pickBtn').onclick=()=>{
+ const won=new Set(history.map(w=>w.name.toLowerCase())),pool=people.filter(p=>!won.has(p.name.toLowerCase()));
+ if(!pool.length){$('winnerTitle').textContent=people.length?'Все уже выигрывали':'Нет участников';$('winnerName').textContent='';$('winnerSub').textContent=people.length?'Новых участников для выбора нет':'Добавь хотя бы одного участника';return}
+ const p=pool[rnd(pool.length)],w={name:p.name,prize:$('prize').value.trim(),time:new Date().toLocaleString('ru-RU',{dateStyle:'short',timeStyle:'short'})};
+ history.unshift(w);$('winnerTitle').textContent='Победитель выбран!';$('winnerName').textContent=p.name;
+ $('winnerSub').textContent=(w.prize?'Приз: '+w.prize+' · ':'')+'случайный выбор среди '+pool.length;
+ addMessage('V1ncent','Победитель: '+p.name);render()};
+$('exportBtn').onclick=()=>{if(!history.length)return;const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+ const csv='\ufeffwinner,prize,time\n'+history.map(w=>[w.name,w.prize,w.time].map(q).join(',')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='v1ncent-winners.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+function setStatus(t,c){$('connection').textContent=t;$('statusDot').style.background=c;$('statusDot').style.boxShadow='0 0 12px '+c}
+function disconnect(keep){const s=ws;ws=null;if(s)s.close();if(!keep){wantWs=false;$('connectBtn').textContent='Подключить';setStatus('ДЕМО-РЕЖИМ · TWITCH НЕ ПОДКЛЮЧЁН','#a78bfa')}}
+function connect(){
+ const ch=$('channel').value.trim().replace(/^#/,'').toLowerCase();
+ if(!/^\w{3,25}$/.test(ch)){setStatus('ВВЕДИ КОРРЕКТНЫЙ КАНАЛ TWITCH','#f0ad4e');return}
+ disconnect(true);wantWs=true;$('connectBtn').textContent='Отключить';setStatus('ПОДКЛЮЧЕНИЕ К #'+ch.toUpperCase()+'…','#f0ad4e');
+ const s=ws=new WebSocket('wss://irc-ws.chat.twitch.tv:443');
+ s.onopen=()=>{s.send('CAP REQ :twitch.tv/tags');s.send('PASS SCHMOOPIIE');s.send('NICK justinfan'+(10000+rnd(80000)));s.send('JOIN #'+ch)};
+ s.onmessage=e=>String(e.data).split('\r\n').forEach(l=>{
+  if(l.startsWith('PING')){s.send('PONG :tmi.twitch.tv');return}
+  const m=l.match(/^(?:@(\S+) )?:(\w+)!\S+ PRIVMSG #\S+ :(.*)$/);
+  if(m){const dn=((m[1]||'').match(/display-name=([^;]*)/)||[])[1];onChat(dn?dn.replace(/\\s/g,' '):m[2],m[3],true,m[2].toLowerCase())}
+  else if(l.includes('tmi.twitch.tv 366 '))setStatus('TWITCH · #'+ch.toUpperCase()+' · ПОДКЛЮЧЕНО','#86e5ae')});
+ s.onclose=()=>{if(ws!==s)return;ws=null;if(wantWs){setStatus('ПЕРЕПОДКЛЮЧЕНИЕ…','#f0ad4e');setTimeout(()=>{if(wantWs&&!ws)connect()},3000)}}}
+$('connectBtn').onclick=()=>wantWs?disconnect():connect();
+$('channel').addEventListener('keydown',e=>{if(e.key==='Enter')$('connectBtn').click()});
+IDS.forEach(i=>$(i).addEventListener('input',saveSoon));
+$('duration').addEventListener('change',()=>{if(!tick){seconds=dur()*60;updateClock();save()}});
+load();document.querySelector('#chat .time').textContent=hhmm();updateClock();render();
 </script></body></html>
