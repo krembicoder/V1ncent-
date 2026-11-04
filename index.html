@@ -30,30 +30,33 @@ input{font:inherit;width:100%;min-width:0;background:#0d0818;border:1px solid #8
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.stat{background:#ffffff08;border-radius:14px;padding:14px}.stat small{color:#a79bc4;font-size:11px}.stat b{display:block;font-size:26px;margin-top:6px}.history div{padding:9px 0;border-bottom:1px solid #ffffff10;color:#d6cdee}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
 @media(max-width:760px){#app{grid-template-columns:1fr}.side{position:static;height:auto;margin:10px;padding:12px;flex-direction:row;align-items:center;gap:10px;border-radius:20px}.side-logo{padding:0}.side-logo svg,.vname,.side-card{display:none}.vmark{font-size:30px}.side-nav{display:flex;overflow-x:auto;gap:6px;flex:1}.side-nav a{padding:10px 12px;white-space:nowrap;font-size:13px}.content{padding:6px 14px 24px}.tag{font-size:13px}.hero p{letter-spacing:.4em}}
+.rcol{display:grid;gap:16px;align-content:start}.chatcard{padding:16px}.chatcard .chat{height:230px;margin-bottom:10px}
+.opts{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;text-align:left}.opts label{flex:1;min-width:150px;margin:0}.opts label>select,.opts label>input,.opts .row{margin-top:6px}.opts .row button{padding:10px 12px}
+select{font:inherit;width:100%;background:#0d0818;border:1px solid #8b5cf633;border-radius:11px;padding:11px 12px;color:#fff;outline:none}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="crown" viewBox="0 0 64 40"><path d="M5 36 9 11l14 12L32 5l9 18 14-12 4 25Z" fill="#1b0f38" stroke="#a78bfa" stroke-width="3" stroke-linejoin="round"/><path d="M8 36h48" stroke="#a78bfa" stroke-width="3"/></symbol></svg>
 <div id="app">
 <aside class="side"><div class="side-logo"><svg><use href="#crown"/></svg><div class="vmark">V1</div><div class="vname">V1ncent</div></div>
-<nav class="side-nav"><a class="active" data-v="main"><i>🎁</i>Розыгрыш</a><a data-v="chat"><i>💬</i>Чат</a><a data-v="settings"><i>⚙️</i>Настройки</a><a data-v="history"><i>🕘</i>История</a><a data-v="about"><i>ℹ️</i>О боте</a></nav>
+<nav class="side-nav"><a class="active" data-v="main"><i>🎁</i>Розыгрыш</a><a data-v="settings"><i>⚙️</i>Настройки</a><a data-v="history"><i>🕘</i>История</a><a data-v="about"><i>ℹ️</i>О боте</a></nav>
 <div class="side-card"><svg viewBox="0 0 24 24"><path d="M4 2 2 6v14h5v3h3l3-3h4l5-5V2Zm16 12-3 3h-5l-3 3v-3H6V4h14Zm-3-7h-2v5h2Zm-5 0h-2v5h2Z"/></svg><div><b>V1ncent</b><small>Giveaway Bot</small></div></div></aside>
 <main class="content">
 <div class="top"><div class="status"><span class="dot" id="statusDot"></span><span id="connection">ДЕМО-РЕЖИМ · TWITCH НЕ ПОДКЛЮЧЁН</span></div><div class="tag">Розыгрыши<br>на новом уровне</div></div>
 <div class="hero"><svg><use href="#crown"/></svg><h1>V1ncent</h1><p>GIVEAWAY</p></div>
 <section class="view" id="v-main"><div class="grid"><div class="left">
-<div class="card timer-card"><div class="state" id="state">Розыгрыш <b>готов к запуску</b></div><div class="clock" id="clock">00:05:00</div><div class="sub">До окончания розыгрыша</div><div class="ctrl"><button id="startBtn" class="primary">▶ Запустить</button><button id="pauseBtn">Ⅱ Пауза</button><button id="resetBtn">↻ Сбросить</button><button id="demoBtn">＋ Тест-участник</button></div></div>
+<div class="card timer-card"><div class="state" id="state">Розыгрыш <b>готов к запуску</b></div><div class="clock" id="clock">00:05:00</div><div class="sub">До окончания розыгрыша</div><div class="ctrl"><button id="startBtn" class="primary">▶ Запустить</button><button id="pauseBtn">Ⅱ Пауза</button><button id="resetBtn">↻ Сбросить</button><button id="demoBtn">＋ Тест-участник</button></div><div class="opts"><label>УЧАСТИЕ<select id="mode"><option value="word">За определённое слово</option><option value="any">За любое сообщение</option></select></label><label id="kwBox">СЛОВО<input id="keyword" value="участвую" autocomplete="off"></label><label>ВРЕМЯ, МИН<div class="row"><input id="duration" type="number" min="1" max="180" value="5"><button id="minus">−1</button><button id="plus">+1</button></div></label></div></div>
 <div class="card"><div class="ph">👥 Участники: <b id="count">0</b></div><div class="avs" id="avatars"></div></div>
 <div class="win"><span id="winnerTitle">Ожидаем победителя</span><b id="winnerName"></b><small id="winnerSub">Победитель появится после выбора</small></div>
 <button class="big" id="pickBtn">▶ Выбрать победителя</button></div>
-<aside class="card recent"><div class="ph">👥 Последние участники</div><div id="participants"></div></aside></div></section>
-<section class="view card" id="v-chat" hidden><h2>Чат · Twitch</h2><div class="chat" id="chat"><div class="msg"><span class="time"></span><div><b>V1ncent</b><p>Чат готов. Здесь появляются сообщения зрителей. Поле ниже — демо-чат для проверки ключевого слова.</p></div></div></div><div class="chat-input"><input id="chatText" placeholder="Напиши сообщение в демо-чат…"><button class="primary" id="sendBtn">Отправить</button></div></section>
-<section class="view card" id="v-settings" hidden><div class="set"><h2>Настройки</h2><div class="field"><label for="channel">КАНАЛ TWITCH</label><div class="row"><input id="channel" placeholder="например, v1ncent" autocomplete="off"><button class="primary" id="connectBtn">Подключить</button></div></div><div class="field"><label for="prize">ПРИЗ</label><input id="prize" placeholder="что разыгрываем"></div><div class="field"><label for="keyword">КЛЮЧЕВОЕ СЛОВО</label><input id="keyword" value="участвую"></div><div class="field"><label for="duration">ДЛИТЕЛЬНОСТЬ (МИНУТЫ)</label><input id="duration" type="number" min="1" max="180" value="5"></div><div class="field"><label for="exclude">ИСКЛЮЧИТЬ НИКИ (ЧЕРЕЗ ЗАПЯТУЮ)</label><input id="exclude" placeholder="боты, модераторы…"></div><p class="hint">Чат читается анонимно, без авторизации. Участники попадают в список, пока идёт таймер. Стример и популярные боты исключены автоматически. Повторное нажатие «Выбрать победителя» выбирает следующего, прошлые победители не повторяются.</p></div></section>
+<div class="rcol"><aside class="card recent"><div class="ph">👥 Последние участники</div><div id="participants"></div></aside><div class="card chatcard"><div class="ph">💬 Чат</div><div class="chat" id="chat"><div class="msg"><span class="time"></span><div><b>V1ncent</b><p>Чат готов. Здесь появляются сообщения зрителей. Поле ниже — демо-чат для проверки ключевого слова.</p></div></div></div><div class="chat-input"><input id="chatText" placeholder="Напиши сообщение в демо-чат…"><button class="primary" id="sendBtn">Отправить</button></div></div></div></div></section>
+
+<section class="view card" id="v-settings" hidden><div class="set"><h2>Настройки</h2><div class="field"><label for="channel">КАНАЛ TWITCH</label><div class="row"><input id="channel" placeholder="например, v1ncent" autocomplete="off"><button class="primary" id="connectBtn">Подключить</button></div></div><div class="field"><label for="prize">ПРИЗ</label><input id="prize" placeholder="что разыгрываем"></div><div class="field"><label for="exclude">ИСКЛЮЧИТЬ НИКИ (ЧЕРЕЗ ЗАПЯТУЮ)</label><input id="exclude" placeholder="боты, модераторы…"></div><p class="hint">Чат читается анонимно, без авторизации. Участники попадают в список, пока идёт таймер. Стример и популярные боты исключены автоматически. Повторное нажатие «Выбрать победителя» выбирает следующего, прошлые победители не повторяются.</p></div></section>
 <section class="view card" id="v-history" hidden><div class="stats"><div class="stat"><small>УЧАСТНИКОВ</small><b id="statPeople">0</b></div><div class="stat"><small>СООБЩЕНИЙ</small><b id="statMessages">0</b></div><div class="stat"><small>ПОБЕДИТЕЛЕЙ</small><b id="statWinners">0</b></div></div><div class="ph">История победителей <button id="exportBtn" style="margin-left:auto">⬇ CSV</button></div><div class="history" id="history">Победителей пока нет</div></section>
 <section class="view card" id="v-about" hidden><h2>О боте</h2><p class="hint">V1ncent Giveaway — панель розыгрышей для Twitch. Данные хранятся в браузере (localStorage). Победитель выбирается случайно (crypto) среди уникальных участников.</p></section>
 </main></div>
 <script>
 const $=id=>document.getElementById(id);
-const KEY='v1ncent.giveaway.v1',IDS=['keyword','duration','channel','prize','exclude'];
+const KEY='v1ncent.giveaway.v1',IDS=['keyword','duration','channel','prize','exclude','mode'];
 const BOTS=['nightbot','streamelements','streamlabs','moobot','fossabot','wizebot'];
 const samples=['pixel_fox','m1racle','nekto_live','vanya_cs','darkwolf','sugarbyte','k0smos','frosty'];
 let people=[],messages=0,history=[],seconds=300,tick=null,ws=null,wantWs=false,st=null;
@@ -67,7 +70,7 @@ function ago(t){const m=Math.floor((Date.now()-(t||Date.now()))/60000);return m<
 function av(n){const d=document.createElement('div');d.className='av';d.textContent=n.slice(0,2).toUpperCase();d.style.background='hsl('+(([...n].reduce((a,c)=>a+c.charCodeAt(0),0)*37)%360)+',55%,38%)';return d}
 function render(){
  $('count').textContent=people.length;$('statPeople').textContent=people.length;$('statMessages').textContent=messages;$('statWinners').textContent=history.length;
- const box=$('participants');box.innerHTML='';const rec=people.slice(-10).reverse();
+ const box=$('participants');box.innerHTML='';const rec=people.slice(-6).reverse();
  if(!rec.length)box.innerHTML='<div class="empty">Пока никого нет. Нажми «Тест-участник» или подключи канал в настройках.</div>';
  rec.forEach(p=>{const d=document.createElement('div');d.className='person';const n=document.createElement('span'),t=document.createElement('small');n.textContent=p.name;t.textContent=ago(p.ts);d.append(av(p.name),n,t);box.append(d)});
  const row=$('avatars');row.innerHTML='';people.slice(-9).reverse().forEach(p=>row.append(av(p.name)));
@@ -82,9 +85,9 @@ function addPerson(name,quiet){name=name.trim().replace(/^@/,'');if(!name)return
  people.push({name,time:hhmm(),ts:Date.now()});render();if(!quiet)addMessage('СИСТЕМА',name+' добавлен в список участников')}
 function onChat(user,text,live,login){
  messages++;$('statMessages').textContent=messages;addMessage(user,text);
- const kw=$('keyword').value.trim().toLowerCase();
- if(kw&&text.toLowerCase().includes(kw)){
-  if(!live)addPerson(user);
+ const kw=$('keyword').value.trim().toLowerCase(),any=$('mode').value==='any';
+ if(any||(kw&&text.toLowerCase().includes(kw))){
+  if(!live)addPerson(user,any);
   else{const ex=[...BOTS,$('channel').value.trim().replace(/^#/,'').toLowerCase(),...$('exclude').value.toLowerCase().split(/[\s,;]+/).map(s=>s.replace(/^@/,''))].filter(Boolean);
    if(tick&&!ex.includes(login))addPerson(user,true)}
  }
@@ -93,7 +96,7 @@ function onChat(user,text,live,login){
 function updateClock(){const p=n=>String(n).padStart(2,'0');$('clock').innerHTML=p(Math.floor(seconds/3600))+':'+p(Math.floor(seconds/60)%60)+':<span>'+p(seconds%60)+'</span>'}
 $('startBtn').onclick=()=>{if(tick)return;if(seconds<=0){seconds=dur()*60;updateClock()}
  tick=setInterval(()=>{seconds--;updateClock();saveSoon();if(seconds<=0){clearInterval(tick);tick=null;addMessage('V1ncent','Время розыгрыша закончилось. Можно выбирать победителя.')}},1000);
- addMessage('V1ncent','Розыгрыш запущен! Ключевое слово: '+$('keyword').value)};
+ addMessage('V1ncent','Розыгрыш запущен! '+($('mode').value==='any'?'Участвует любой, кто напишет в чат':'Ключевое слово: '+$('keyword').value))};
 $('pauseBtn').onclick=()=>{clearInterval(tick);tick=null;addMessage('V1ncent','Таймер на паузе')};
 $('resetBtn').onclick=()=>{clearInterval(tick);tick=null;seconds=dur()*60;updateClock();people=[];messages=0;render();addMessage('V1ncent','Список и таймер сброшены')};
 $('demoBtn').onclick=()=>addPerson(samples.find(s=>!people.some(p=>p.name===s))||('viewer_'+(1000+rnd(9000))));
@@ -126,9 +129,11 @@ function connect(){
 $('connectBtn').onclick=()=>wantWs?disconnect():connect();
 $('channel').addEventListener('keydown',e=>{if(e.key==='Enter')$('connectBtn').click()});
 IDS.forEach(i=>$(i).addEventListener('input',saveSoon));
-$('duration').addEventListener('change',()=>{if(!tick){seconds=dur()*60;updateClock();save()}});
+$('duration').addEventListener('change',()=>{seconds=dur()*60;updateClock();save()});
 load();document.querySelector('#chat .time').textContent=hhmm();updateClock();render();
 function show(v){document.querySelectorAll('.view').forEach(e=>e.hidden=e.id!=='v-'+v);document.querySelectorAll('.side-nav a').forEach(a=>a.classList.toggle('active',a.dataset.v===v));if(v==='chat')$('chat').scrollTop=$('chat').scrollHeight}
 document.querySelectorAll('.side-nav a').forEach(a=>a.onclick=e=>{e.preventDefault();show(a.dataset.v)});
 setInterval(()=>{$('state').innerHTML=tick?'Розыгрыш <b>активен!</b>':seconds<=0?'Розыгрыш <b>завершён</b>':seconds===dur()*60?'Розыгрыш <b>готов к запуску</b>':'Розыгрыш <b>на паузе</b>'},300);
+const adj=d=>{seconds=Math.max(1,seconds+d*60);updateClock();save()};$('minus').onclick=()=>adj(-1);$('plus').onclick=()=>adj(1);
+function modeUI(){$('kwBox').hidden=$('mode').value==='any'}$('mode').addEventListener('change',()=>{modeUI();saveSoon()});modeUI();
 </script></body></html>
