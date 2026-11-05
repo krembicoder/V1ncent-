@@ -214,7 +214,7 @@ $('logoClear').onclick=()=>{try{localStorage.removeItem('v1ncent.logo')}catch(e)
 applyLogo();render();
 $('mRe').onclick=$('reBtn').onclick=reroll;
 $('moneyBtn').onclick=()=>{if(busy||!lastPick||!lastPick.entries.length)return;$('modal').hidden=false;$('mChoose').hidden=true;$('mStage').hidden=false;$('mView').innerHTML='';$('mInfo').textContent='Деп и вывод для победителей';$('mMoney').innerHTML='';lastPick.entries.forEach(e=>$('mMoney').append(moneyRow(e)));$('mClose').hidden=false;$('mRe').hidden=true};
-$('reloadBtn').onclick=()=>{if(confirm('Вернуть всех прошлых победителей в розыгрыш?')){banned=new Set();declined=new Set();render();addMessage('V1ncent','Список победителей сброшен — все участники снова в игре')}};
+$('reloadBtn').onclick=()=>{if(confirm('Убрать всех участников? Все смогут участвовать заново, в том числе прошлые победители.')){people=[];cnt={};said={};banned=new Set();declined=new Set();render();addMessage('V1ncent','Список участников очищен — все участвуют заново')}};
 addEventListener('storage',e=>{if(e.key!=='v1ncent.cmd'||!e.newValue)return;try{const c=JSON.parse(e.newValue);if(c.c==='reroll')reroll();else if(c.c==='money'&&lastPick&&lastPick.entries.length){const x=lastPick.entries[lastPick.entries.length-1];x.dep=c.d;x.out=c.o;moneyChanged();render()}}catch(x){}});
 $('impBtn').onclick=()=>{$('impTxt').value.split(/[\n,;\s]+/).filter(Boolean).forEach(n=>addPerson(n,true));$('impTxt').value=''};
 const PK='v1ncent.presets',gp=()=>{try{return JSON.parse(localStorage.getItem(PK)||'{}')}catch(e){return{}}},sp=P=>{try{localStorage.setItem(PK,JSON.stringify(P))}catch(e){}pFill()};
