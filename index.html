@@ -68,6 +68,11 @@ select{font:inherit;width:100%;background:#0d0818;border:1px solid #8b5cf633;bor
 .chat .msg .time{display:inline;margin-right:4px;color:#7a6f96;font-size:11px}.chat .msg b{font-weight:700}.chat .msg .txt{color:#efe9ff}.chat .msg.sys .txt{color:#a79bc4;font-style:italic}
 .emo{height:28px;vertical-align:middle;margin:-4px 1px}#chatNew{position:absolute;left:50%;transform:translateX(-50%);bottom:76px;background:#6d28d9;border-color:#a78bfa;z-index:3}
 .clk{cursor:pointer}.clk:hover{border-color:#a78bfa!important}#wAllList{max-height:55vh;overflow:auto;font-size:13px;line-height:1.5}#wAllList div{padding:3px 0;border-bottom:1px solid #ffffff10;word-break:break-word;color:#e0d8f5}#wAllList small{color:#8f84ad;margin-right:8px}
+.ptag{display:inline-block;margin-right:4px;padding:0 6px;border-radius:6px;background:#15803d;color:#fff;font-size:11px;font-weight:700;line-height:1.5;vertical-align:1px}
+#modal{background:#000b;display:grid;place-items:center;padding:16px}
+.wbox{width:min(100%,max(540px,50vw));height:auto;max-height:70vh;border-radius:18px;border:1px solid #8b5cf655;box-shadow:0 0 60px #7c3aed55}
+.wbox .whead{padding:12px 18px;font-size:clamp(16px,1.5vw,20px)}.wbox .wc h2{font-size:clamp(28px,3.6vw,52px)}
+.wbox .wav{width:clamp(84px,9vw,116px);height:clamp(84px,9vw,116px)}.wbox .wbtns button{padding:13px 8px}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="crown" viewBox="0 0 64 40"><path d="M5 36 9 11l14 12L32 5l9 18 14-12 4 25Z" fill="#1b0f38" stroke="#a78bfa" stroke-width="3" stroke-linejoin="round"/><path d="M8 36h48" stroke="#a78bfa" stroke-width="3"/></symbol></svg>
@@ -166,10 +171,13 @@ function emoSpan(text,em,box){const cp=Array.from(text),at=[];
  at.sort((x,y)=>x.a-y.a);let p=0;
  at.forEach(x=>{if(x.a<p||x.b>=cp.length)return;if(x.a>p)box.append(cp.slice(p,x.a).join(''));const im=document.createElement('img');im.className='emo';im.alt=cp.slice(x.a,x.b+1).join('');im.src='https://static-cdn.jtvnw.net/emoticons/v2/'+encodeURIComponent(x.id)+'/default/dark/1.0';box.append(im);p=x.b+1});
  if(p<cp.length)box.append(cp.slice(p).join(''))}
-function chatFlush(){chatT=0;const c=$('chat');if(!chatQ.length)return;if(chatQ.length>150)chatQ.splice(0,chatQ.length-150);const f=document.createDocumentFragment();chatQ.splice(0).forEach(d=>f.append(d));c.append(f);while(c.children.length>200)c.firstChild.remove();if(chatStick)c.scrollTop=c.scrollHeight;else $('chatNew').hidden=false}
-function addMessage(user,msg,fl){if(user==='V1ncent'&&/запущен|Победитель:|закончилось|подтвердить|не ответил/.test(msg))say(msg);
+function chatSync(){const S=new Set(poolNow().map(p=>String(p.login||p.name).toLowerCase()));for(const d of $('chat').children){const l=d.dataset.l;if(!l)continue;const on=S.has(l),t=d.querySelector('.ptag');
+ if(on&&!t){const g=document.createElement('span');g.className='ptag';g.textContent='участвует';d.querySelector('b').before(g,' ')}
+ else if(!on&&t){const n=t.nextSibling;if(n&&n.nodeType===3)n.remove();t.remove()}}}
+function chatFlush(){chatT=0;const c=$('chat');if(!chatQ.length)return;if(chatQ.length>150)chatQ.splice(0,chatQ.length-150);const f=document.createDocumentFragment();chatQ.splice(0).forEach(d=>f.append(d));c.append(f);while(c.children.length>200)c.firstChild.remove();chatSync();if(chatStick)c.scrollTop=c.scrollHeight;else $('chatNew').hidden=false}
+function addMessage(user,msg,fl,lg){if(user==='V1ncent'&&/запущен|Победитель:|закончилось|подтвердить|не ответил/.test(msg))say(msg);
  const sys=user==='V1ncent'||user==='СИСТЕМА',d=document.createElement('div'),t=document.createElement('span'),b=document.createElement('b'),x=document.createElement('span');
- d.className='msg'+(sys?' sys':'');t.className='time';t.textContent=hhmm();b.textContent=user;b.style.color=(fl&&fl.col)||ncol(user);x.className='txt';
+ d.className='msg'+(sys?' sys':'');d.dataset.l=sys?'':String(lg||user).toLowerCase();t.className='time';t.textContent=hhmm();b.textContent=user;b.style.color=(fl&&fl.col)||ncol(user);x.className='txt';
  const act=/^\u0001ACTION /.test(msg);if(act){msg=msg.replace(/^\u0001ACTION |\u0001$/g,'');x.style.fontStyle='italic'}
  if(fl&&fl.em&&!act)emoSpan(msg,fl.em,x);else x.textContent=msg;
  d.append(t,' ',b,': ',x);chatQ.push(d);if(!chatT)chatT=setTimeout(chatFlush,80)}
@@ -202,7 +210,7 @@ function addPerson(name,quiet,fl){name=name.trim().replace(/^@/,'');if(!name)ret
 let cnt={},said={};
 function onChat(user,text,live,login,fl){
  fl=fl||{};if(pending&&(user.toLowerCase()===pending.p.name.toLowerCase()||login===pending.p.name.toLowerCase())){pending.ok=true;pending.at=pending.at||Date.now()}winMsg(user,login,text);if(live&&login){msgsN[login]=(msgsN[login]||0)+1;lastBy[login]={m:text.slice(0,200),t:Date.now()};logPush(curCh||'?',login,user,text,Date.now())}
- messages++;$('statMessages').textContent=messages;addMessage(user,text,fl);
+ messages++;$('statMessages').textContent=messages;addMessage(user,text,fl,login);
  if(live&&(fl.mod||login===$('channel').value.trim().toLowerCase())){const c=text.trim().toLowerCase();if(c==='!старт')$('startBtn').click();else if(c==='!стоп')$('pauseBtn').click()}
  if(live&&Date.now()-lastCmd>15000){const c=text.trim().toLowerCase();if(c==='!время'){lastCmd=Date.now();say('Осталось '+$('clock').textContent)}else if(c==='!участники'){lastCmd=Date.now();say('Участников: '+people.length)}}
  const kw=$('keyword').value.trim().toLowerCase(),md=$('mode').value,any=md==='any',mn=text.match(/-?\d+/),hit=any||(md==='guess'?!!mn:(kw&&text.toLowerCase().includes(kw)));fl.g=mn?+mn[0]:null;fl.login=login;
@@ -307,7 +315,7 @@ $('mX').onclick=closeWin;$('modal').addEventListener('click',e=>{if(e.target===$
 $('wCard').onclick=()=>{if(curW&&curW.login)window.open('https://www.twitch.tv/'+encodeURIComponent(curW.login),'_blank','noopener')};
 $('wFol').onclick=()=>{if(curW){info(curW);presence(curW)}};
 $('wFairBtn').onclick=()=>{const f=$('wFair');f.hidden=!f.hidden;const q=curW&&curW.proof;if(q)f.textContent='Способ: '+q.how+'. Участников в пуле: '+q.n+'. Место победителя в списке: '+q.idx+'. SHA-256 списка участников (по алфавиту): '+q.hash+'. Время: '+q.t}
-const _render=render;render=()=>{_render();const H=$('history');H.innerHTML='';if(!history.length)H.textContent='Победителей пока нет';history.forEach((w,i)=>{const d=document.createElement('div');d.textContent='#'+(history.length-i)+' · '+w.name+(w.round?' · '+w.round:'')+(w.prize?' · '+w.prize:'')+' · '+w.time;H.append(d)});totals();stats();const L=$('plist');L.innerHTML='';people.forEach((p,i)=>{const d=document.createElement('div');d.className='person';const n=document.createElement('span'),x=document.createElement('button');n.textContent=p.name+(p.sub?' ⭐':'');x.textContent='✕';x.onclick=()=>{people.splice(i,1);render()};d.append(av(p.name),n,x);L.append(d)})};
+const _render=render;render=()=>{_render();chatSync();const H=$('history');H.innerHTML='';if(!history.length)H.textContent='Победителей пока нет';history.forEach((w,i)=>{const d=document.createElement('div');d.textContent='#'+(history.length-i)+' · '+w.name+(w.round?' · '+w.round:'')+(w.prize?' · '+w.prize:'')+' · '+w.time;H.append(d)});totals();stats();const L=$('plist');L.innerHTML='';people.forEach((p,i)=>{const d=document.createElement('div');d.className='person';const n=document.createElement('span'),x=document.createElement('button');n.textContent=p.name+(p.sub?' ⭐':'');x.textContent='✕';x.onclick=()=>{people.splice(i,1);render()};d.append(av(p.name),n,x);L.append(d)})};
 $('addBtn').onclick=()=>{addPerson($('addName').value);$('addName').value=''};
 $('clearBtn').onclick=()=>{if(confirm('Очистить список участников?')){snap();people=[];cnt={};said={};render()}};
 function applyLogo(u){try{u=u||localStorage.getItem('v1ncent.logo')}catch(e){}if(!u)return;$('logoImg').src=u;$('logoImg').hidden=false;document.querySelector('.hero').classList.add('hasimg')}
