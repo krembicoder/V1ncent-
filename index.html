@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#030804"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#030804"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;700;800&display=swap" rel="stylesheet">
 <title>V1ncentPlay — Giveaway CS2</title>
 <style>
 *{box-sizing:border-box}[hidden]{display:none!important}
@@ -107,23 +107,138 @@ input:focus,select:focus,textarea:focus{border-color:#3dff4d;box-shadow:0 0 0 3p
 ::selection{background:#22e22e55}
 input[type=checkbox]{accent-color:#22e22e}
 *{scrollbar-color:#16a822 #07100a}
+
+/* ===== CS2 HUD elements ===== */
+body,button,input,select,textarea{font-family:'Oxanium',Inter,ui-sans-serif,system-ui,sans-serif}
+/* угловые скобки как в HUD */
+.card{position:relative;border-radius:8px}
+.card::before{content:"";position:absolute;inset:6px;pointer-events:none;z-index:1;background:
+linear-gradient(#3dff4d,#3dff4d) left top/16px 2px no-repeat,linear-gradient(#3dff4d,#3dff4d) left top/2px 16px no-repeat,
+linear-gradient(#3dff4d,#3dff4d) right top/16px 2px no-repeat,linear-gradient(#3dff4d,#3dff4d) right top/2px 16px no-repeat,
+linear-gradient(#3dff4d,#3dff4d) left bottom/16px 2px no-repeat,linear-gradient(#3dff4d,#3dff4d) left bottom/2px 16px no-repeat,
+linear-gradient(#3dff4d,#3dff4d) right bottom/16px 2px no-repeat,linear-gradient(#3dff4d,#3dff4d) right bottom/2px 16px no-repeat;opacity:.75}
+.side{border-radius:10px}
+button,input,select,textarea{border-radius:4px}
+button{text-transform:uppercase;letter-spacing:.06em}
+.big{border-radius:6px}
+/* прицел за логотипом */
+.hero{position:relative}.hero>*:not(.xh){position:relative;z-index:1}
+.xh{position:absolute!important;left:50%;top:48%;width:320px;height:320px;margin:-160px 0 0 -160px;border-radius:50%;border:2px dashed #3dff4d55;pointer-events:none;z-index:0;animation:xhs 40s linear infinite;
+background:linear-gradient(#3dff4d99,#3dff4d99) center/2px 100% no-repeat,linear-gradient(#3dff4d99,#3dff4d99) center/100% 2px no-repeat;
+-webkit-mask:radial-gradient(circle,transparent 0 70px,#000 71px);mask:radial-gradient(circle,transparent 0 70px,#000 71px)}
+@keyframes xhs{to{transform:rotate(360deg)}}
+/* жёлто-чёрная полоса как на картах CS2 */
+.hero::after{content:"";display:block;position:relative;z-index:1;height:7px;margin:16px auto 0;width:min(520px,80%);background:repeating-linear-gradient(135deg,#f5c400 0 10px,#0b0b0b 10px 20px);border-radius:2px;opacity:.9}
+/* бейдж в стиле килл-фида */
+.tag{transform:none;border:1px solid #3dff4d88;border-bottom-width:1px;background:#000b;border-radius:3px;padding:9px 14px;font-style:normal;text-transform:uppercase;letter-spacing:.06em;font-size:15px;box-shadow:0 0 16px #22e22e33}
+.tag::before{content:"⌖ ";color:#3dff4d}
+/* таймер как таймер бомбы */
+.timer-card::before{content:"● ROUND TIMER";position:absolute;inset:auto;left:20px;top:14px;background:none;color:#f5c400;font-size:11px;letter-spacing:.18em;font-weight:700;width:auto;height:auto;opacity:1}
+.clock{font-family:'Oxanium',monospace;letter-spacing:.04em}
+/* деньги/статы жёлтым как в закупке */
+.mini .stat b,.stats .stat b{color:#f5c400}
+.mini .stat,.stats .stat{border:1px solid #f5c40033;border-radius:4px}
+/* победитель как строка килл-фида */
+.win b:not(:empty){display:inline-block;padding:4px 16px;margin-top:6px;background:#000c;border:1px solid #3dff4d;border-radius:3px;box-shadow:0 0 18px #22e22e66}
+.win b:not(:empty)::before{content:"☠ ";color:#f5c400}
+/* список участников как скорборд */
+.recent .person:nth-child(odd){background:#ffffff08}.recent .person{padding:7px 8px;border-left:2px solid #3dff4d55}
+.ph{text-transform:uppercase;letter-spacing:.08em;font-size:16px}
+.side-nav a{text-transform:uppercase;letter-spacing:.06em;font-size:14px;border-radius:4px}
+.side-nav a.active{border-left:4px solid #f5c400}
+.pill{border-radius:3px}
+
+/* ===== v3: верхнее меню + три колонки ===== */
+.gift{display:block;width:110px;height:100px;margin:0 auto 6px;filter:drop-shadow(0 0 18px #22e22e)}
+.luck{text-align:center;margin-top:26px;color:#9fbba5;letter-spacing:.28em;font-size:13px;font-weight:700}
+.hero::before{content:"";position:absolute;inset:-20px 0 0 0;pointer-events:none;z-index:0;opacity:.55;background:
+linear-gradient(115deg,transparent 0 38%,#3dff4d 38% 50%,transparent 50% 60%,#3dff4d77 60% 64%,transparent 64%) left/240px 100% no-repeat,
+linear-gradient(295deg,transparent 0 38%,#3dff4d 38% 50%,transparent 50% 60%,#3dff4d77 60% 64%,transparent 64%) right/240px 100% no-repeat}
+.clock{display:inline-block;padding:2px 28px;border:1px solid #3dff4d55;border-radius:10px;background:#050b06;box-shadow:inset 0 0 22px #22e22e22}
+.win{border:1px solid #22e22e55;border-radius:8px;padding:18px 14px;background:linear-gradient(160deg,#0b180e,#050b06);min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:inset 0 0 36px #22e22e14,0 10px 40px #000a}
+.win::before{content:"?";display:grid;place-items:center;width:104px;height:104px;border:2px solid #3dff4d;border-radius:14px;font-size:60px;font-weight:800;color:#9fbba5;background:#050b06;box-shadow:0 0 34px #22e22e66,inset 0 0 22px #22e22e33;margin-bottom:12px;transform:rotate(-4deg)}
+.win:has(#winnerName:not(:empty))::before{content:"🏆";color:#f5c400}
+.win b#winnerName{font-size:26px}
+@media(min-width:761px){
+ #app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+ .side{position:sticky;top:0;height:auto;margin:10px 14px 0;padding:10px 18px;flex-direction:row;align-items:center;gap:22px;border-radius:12px;z-index:5}
+ .side-logo{display:flex;align-items:center;gap:10px;padding:0}.side-logo svg{display:none}
+ .vmark{font-size:30px}.vname{font-size:20px}
+ .side-nav{display:flex;gap:6px;flex-wrap:wrap}.side-nav a{padding:10px 14px}
+ .side-card{margin:0 0 0 auto;padding:6px 12px}.side-card svg{width:26px;height:26px}
+}
+@media(min-width:1000px){
+ #v-main .grid{display:grid;grid-template-columns:minmax(250px,320px) minmax(0,1fr) minmax(250px,320px);gap:18px;align-items:start;margin-top:70px}
+ #v-main .left,#v-main .rcol{display:contents}
+ .recent{grid-column:1;grid-row:1}
+ .timer-card{grid-column:2;grid-row:1}
+ .win{grid-column:3;grid-row:1}
+ .left>.card:not(.timer-card){grid-column:1;grid-row:2}
+ .big{grid-column:2;grid-row:2;width:100%}
+ .mini{grid-column:3;grid-row:2}
+ .chatcard{grid-column:1/-1;grid-row:3}
+ .chatcard .chat{height:240px}
+ .gift{margin-top:-88px}
+ .clock{font-size:clamp(40px,5vw,76px)}
+}
+
+/* ===== фоновые элементы CS2 ===== */
+.bgfx{position:absolute;inset:0;overflow:hidden;pointer-events:none;user-select:none;z-index:0}
+.fx{position:absolute;opacity:.2;animation:fl 9s ease-in-out infinite}
+.fx.lg{opacity:.12}
+@keyframes fl{50%{translate:0 -10px}}
+.g1{left:4%;top:110px;width:78px;rotate:-18deg}
+.g2{right:5%;top:200px;width:70px;rotate:22deg;animation-delay:-3s}
+.c4{left:21%;top:70px;width:130px;rotate:-8deg;animation-delay:-5s}
+.rifle{left:50%;top:96px;width:560px;margin-left:-280px;rotate:-5deg}
+.knife{left:11%;top:250px;width:170px;rotate:28deg;animation-delay:-2s}
+.bh{width:56px;animation:none}
+.bh1{left:31%;top:170px}.bh2{right:27%;top:240px;width:44px}.bh3{left:7%;top:420px}.bh4{right:9%;top:470px;width:64px}.bh5{left:45%;bottom:120px;width:40px}
+.smk{border-radius:50%;filter:blur(46px);background:#9fd8a6;opacity:.08;animation:sm 14s ease-in-out infinite}
+@keyframes sm{50%{translate:30px -20px;scale:1.15}}
+.smk1{left:2%;top:260px;width:320px;height:320px}.smk2{right:6%;top:60px;width:280px;height:280px;animation-delay:-6s}
+.radar{left:-70px;bottom:-70px;width:280px;height:280px;border-radius:50%;border:2px solid #3dff4d;animation:none;
+background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px),linear-gradient(#3dff4d,#3dff4d) center/1px 100% no-repeat,linear-gradient(#3dff4d,#3dff4d) center/100% 1px no-repeat}
+.radar::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#3dff4d 0,transparent 30%);animation:sw 4s linear infinite}
+.radar::after{content:"";position:absolute;left:62%;top:30%;width:8px;height:8px;border-radius:50%;background:#f5c400;box-shadow:-60px 70px 0 #ff5a3c}
+@keyframes sw{to{transform:rotate(360deg)}}
+.fx.txt{font-weight:800;letter-spacing:.3em;color:transparent;-webkit-text-stroke:1px #3dff4d;opacity:.25;white-space:nowrap;animation:none}
+.txt1{right:-70px;top:540px;rotate:90deg;font-size:34px}.txt2{left:30%;bottom:34px;font-size:40px}.txt3{right:8%;bottom:40px;font-size:40px}
+.content{padding-bottom:140px}
+.card{background:linear-gradient(160deg,#0b180ed6,#050b06d6)}
+@media(max-width:760px){.rifle,.txt,.radar{display:none}.fx{opacity:.14}}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="crown" viewBox="0 0 64 40"><path d="M5 36 9 11l14 12L32 5l9 18 14-12 4 25Z" fill="#06140a" stroke="#4dff5c" stroke-width="3" stroke-linejoin="round"/><path d="M8 36h48" stroke="#4dff5c" stroke-width="3"/></symbol></svg>
 <div id="app">
+<div class="bgfx" aria-hidden="true">
+<div class="fx smk smk1"></div><div class="fx smk smk2"></div>
+<svg class="fx lg rifle" viewBox="0 0 240 70" fill="none" stroke="#3dff4d" stroke-width="1.2" stroke-linejoin="round"><path d="M4 28 40 24 44 38 16 46Z"/><path d="M44 24H140V38H44Z"/><path d="M140 29H236V33H140Z"/><path d="M100 20H152V40H100Z"/><path d="M70 38Q62 54 76 66L90 60Q82 50 88 38"/><path d="M52 38 48 58 60 60 62 38"/><path d="M60 24V18H92V24"/><path d="M110 26H142M110 32H142"/></svg>
+<svg class="fx g1" viewBox="0 0 60 90" fill="none" stroke="#3dff4d" stroke-width="2.5" stroke-linejoin="round"><ellipse cx="30" cy="56" rx="22" ry="28"/><path d="M18 40h24M16 52h28M16 64h28M20 76h20"/><rect x="24" y="18" width="12" height="10" rx="2"/><path d="m36 20 16-8 4 6-14 10"/><circle cx="22" cy="12" r="6"/></svg>
+<svg class="fx g2" viewBox="0 0 60 90" fill="none" stroke="#3dff4d" stroke-width="2.5" stroke-linejoin="round"><rect x="10" y="30" width="40" height="58" rx="10"/><path d="M10 48h40M10 70h40"/><rect x="22" y="14" width="16" height="16" rx="2"/><path d="m38 18 14-6 3 6-12 8"/></svg>
+<svg class="fx c4" viewBox="0 0 120 70" fill="none" stroke="#3dff4d" stroke-width="2.5" stroke-linejoin="round"><rect x="4" y="10" width="112" height="52" rx="6"/><rect x="14" y="20" width="44" height="18" rx="2"/><path d="M18 30h8M30 30h8M42 30h8"/><rect x="70" y="20" width="36" height="32" rx="2"/><path d="M76 28h24M76 36h24M76 44h24M60 10C60 0 80-2 88 4"/></svg>
+<svg class="fx knife" viewBox="0 0 160 40" fill="none" stroke="#3dff4d" stroke-width="2.5" stroke-linejoin="round"><path d="M4 20C44 4 94 2 134 14l-10 10C84 26 44 28 4 20Z"/><path d="m134 14 22-2v14l-22-2Z"/><path d="M30 18c30-8 60-8 90-2"/></svg>
+<svg class="fx bh bh1" viewBox="0 0 60 60" fill="none" stroke="#3dff4d" stroke-width="1.6"><circle cx="30" cy="30" r="7" fill="#020a04"/><path d="M30 23V4M30 37v19M23 30H4M37 30h19M25 25 12 12M35 35l13 13M35 25l13-13M25 35 12 48"/><circle cx="30" cy="30" r="14" stroke-dasharray="3 5"/></svg>
+<svg class="fx bh bh2" viewBox="0 0 60 60" fill="none" stroke="#3dff4d" stroke-width="1.6"><circle cx="30" cy="30" r="7" fill="#020a04"/><path d="M30 23V4M30 37v19M23 30H4M37 30h19M25 25 12 12M35 35l13 13M35 25l13-13M25 35 12 48"/><circle cx="30" cy="30" r="14" stroke-dasharray="3 5"/></svg>
+<svg class="fx bh bh3" viewBox="0 0 60 60" fill="none" stroke="#3dff4d" stroke-width="1.6"><circle cx="30" cy="30" r="7" fill="#020a04"/><path d="M30 23V4M30 37v19M23 30H4M37 30h19M25 25 12 12M35 35l13 13M35 25l13-13M25 35 12 48"/><circle cx="30" cy="30" r="14" stroke-dasharray="3 5"/></svg>
+<svg class="fx bh bh4" viewBox="0 0 60 60" fill="none" stroke="#3dff4d" stroke-width="1.6"><circle cx="30" cy="30" r="7" fill="#020a04"/><path d="M30 23V4M30 37v19M23 30H4M37 30h19M25 25 12 12M35 35l13 13M35 25l13-13M25 35 12 48"/><circle cx="30" cy="30" r="14" stroke-dasharray="3 5"/></svg>
+<svg class="fx bh bh5" viewBox="0 0 60 60" fill="none" stroke="#3dff4d" stroke-width="1.6"><circle cx="30" cy="30" r="7" fill="#020a04"/><path d="M30 23V4M30 37v19M23 30H4M37 30h19M25 25 12 12M35 35l13 13M35 25l13-13M25 35 12 48"/><circle cx="30" cy="30" r="14" stroke-dasharray="3 5"/></svg>
+<div class="fx radar"></div>
+<div class="fx txt txt1">DE_V1NCENT</div><div class="fx txt txt2">A SITE</div><div class="fx txt txt3">B SITE</div>
+</div>
 <aside class="side"><div class="side-logo"><svg><use href="#crown"/></svg><div class="vmark">V1</div><div class="vname">V1ncent<span>Play</span></div></div>
 <nav class="side-nav"><a class="active" data-v="main"><i>🎁</i>Розыгрыш</a><a data-v="people"><i>👥</i>Участники</a><a data-v="blacklist"><i>🚫</i>Чёрный список</a><a data-v="settings"><i>⚙️</i>Настройки</a><a data-v="history"><i>🕘</i>История</a><a data-v="about"><i>ℹ️</i>О боте</a></nav>
 <div class="side-card"><svg viewBox="0 0 24 24"><path d="M4 2 2 6v14h5v3h3l3-3h4l5-5V2Zm16 12-3 3h-5l-3 3v-3H6V4h14Zm-3-7h-2v5h2Zm-5 0h-2v5h2Z"/></svg><div><b>V1ncent<span style="color:#4dff5c">Play</span></b><small>Giveaway · CS2</small></div></div></aside>
 <main class="content">
-<div class="top"><div class="status"><span class="dot" id="statusDot"></span><span id="connection">ДЕМО-РЕЖИМ · TWITCH НЕ ПОДКЛЮЧЁН</span></div><button id="fsBtn" title="На весь экран (F)">⛶</button><div class="tag">Розыгрыши<br>на новом уровне</div></div>
-<div class="hero"><svg><use href="#crown"/></svg><h1>V1ncent<span>Play</span></h1><p>GIVEAWAY · CS2</p><img id="logoImg" alt="" hidden></div>
+<div class="top"><div class="status"><span class="dot" id="statusDot"></span><span id="connection">ДЕМО-РЕЖИМ · TWITCH НЕ ПОДКЛЮЧЁН</span></div><button id="fsBtn" title="На весь экран (F)">⛶</button><div class="tag">Лучшие прокачки<br>только у V1ncent</div></div>
+<div class="hero"><div class="xh"></div><svg><use href="#crown"/></svg><h1>V1ncent<span>Play</span></h1><p>GIVEAWAY · CS2</p><img id="logoImg" alt="" hidden></div>
 <section class="view" id="v-main"><div class="grid"><div class="left">
-<div class="card timer-card"><div class="state" id="state">Розыгрыш <b>готов к запуску</b></div><div class="clock" id="clock">00:05:00</div><div class="sub">До окончания розыгрыша</div><div class="ctrl"><button id="startBtn" class="primary">▶ Запустить</button><button id="pauseBtn">Ⅱ Пауза</button><button id="resetBtn">↻ Сбросить</button><button id="reloadBtn">⟳ Перезагрузить</button><button id="undoBtn" hidden>↶ Отменить</button><button id="demoBtn">＋ Тест-участник</button></div><div class="opts"><label>УЧАСТИЕ<select id="mode"><option value="word">За определённое слово</option><option value="any">За любое сообщение</option><option value="first">Кто быстрее напишет слово</option><option value="guess">Угадай число</option></select></label><label id="kwBox">СЛОВО<input id="keyword" value="участвую" autocomplete="off"></label><label id="tgBox" hidden>ЗАГАДАННОЕ ЧИСЛО<input id="target" type="number" value="50"></label><label>ПОБЕДИТЕЛЕЙ<input id="winCount" type="number" min="1" max="20" value="1"></label><label>ВРЕМЯ, МИН<div class="row"><input id="duration" type="number" min="1" max="180" value="5"><button id="minus">−1</button><button id="plus">+1</button></div></label></div></div>
+<div class="card timer-card"><svg class="gift" viewBox="0 0 120 110" aria-hidden="true"><rect x="20" y="48" width="80" height="58" rx="4" fill="#0a0f0b" stroke="#3dff4d" stroke-width="2"/><rect x="14" y="36" width="92" height="20" rx="4" fill="#0e140f" stroke="#3dff4d" stroke-width="2"/><rect x="52" y="36" width="16" height="70" fill="#22e22e"/><path d="M60 36C40 36 30 14 44 10C56 7 60 24 60 36ZM60 36C80 36 90 14 76 10C64 7 60 24 60 36Z" fill="#0a0f0b" stroke="#3dff4d" stroke-width="3" stroke-linejoin="round"/><circle cx="60" cy="36" r="6" fill="#3dff4d"/></svg><div class="state" id="state">Розыгрыш <b>готов к запуску</b></div><div class="clock" id="clock">00:05:00</div><div class="sub">До окончания розыгрыша</div><div class="ctrl"><button id="startBtn" class="primary">▶ Запустить</button><button id="pauseBtn">Ⅱ Пауза</button><button id="resetBtn">↻ Сбросить</button><button id="reloadBtn">⟳ Перезагрузить</button><button id="undoBtn" hidden>↶ Отменить</button><button id="demoBtn">＋ Тест-участник</button></div><div class="opts"><label>УЧАСТИЕ<select id="mode"><option value="word">За определённое слово</option><option value="any">За любое сообщение</option><option value="first">Кто быстрее напишет слово</option><option value="guess">Угадай число</option></select></label><label id="kwBox">СЛОВО<input id="keyword" value="участвую" autocomplete="off"></label><label id="tgBox" hidden>ЗАГАДАННОЕ ЧИСЛО<input id="target" type="number" value="50"></label><label>ПОБЕДИТЕЛЕЙ<input id="winCount" type="number" min="1" max="20" value="1"></label><label>ВРЕМЯ, МИН<div class="row"><input id="duration" type="number" min="1" max="180" value="5"><button id="minus">−1</button><button id="plus">+1</button></div></label></div></div>
 <div class="mini" id="miniStats"><div class="stat" title="Победитель, который подошёл по правилам и не был рерольнут"><small>ПРОКАЧЕК</small><b id="mPumps">0</b></div><div class="stat"><small>РЕРОЛОВ</small><b id="mRerolls">0</b></div><div class="stat"><small>В ЧЁРНОМ СПИСКЕ</small><b id="mBlk">0</b></div><button id="mReset" title="Сбросить счётчики">↺</button></div>
 <div class="card"><div class="ph">👥 Участники: <b id="count">0</b></div><div class="avs" id="avatars"></div></div>
 <div class="win"><span id="winnerTitle">Ожидаем победителя</span><b id="winnerName"></b><small id="winnerSub">Победитель появится после выбора</small><div class="ctrl" style="margin-top:8px"><button id="keepBtn" hidden>✅ Оставить</button></div></div>
 <button class="big" id="pickBtn">▶ Выбрать победителя</button></div>
-<div class="rcol"><div class="card chatcard"><div class="ph">💬 Чат</div><div class="chat" id="chat"><div class="msg sys"><span class="time"></span> <b style="color:#4dff5c">V1ncent</b>: <span class="txt">Чат готов. Здесь появляются сообщения зрителей. Поле ниже — демо-чат для проверки ключевого слова.</span></div></div><button id="chatNew" hidden>↓ Новые сообщения</button><div class="chat-input"><input id="chatText" placeholder="Напиши сообщение в демо-чат…"><button class="primary" id="sendBtn">Отправить</button></div></div><aside class="card recent"><div class="ph">👥 Последние участники</div><div id="participants"></div></aside></div></div></section>
+<div class="rcol"><div class="card chatcard"><div class="ph">💬 Чат</div><div class="chat" id="chat"><div class="msg sys"><span class="time"></span> <b style="color:#4dff5c">V1ncent</b>: <span class="txt">Чат готов. Здесь появляются сообщения зрителей. Поле ниже — демо-чат для проверки ключевого слова.</span></div></div><button id="chatNew" hidden>↓ Новые сообщения</button><div class="chat-input"><input id="chatText" placeholder="Напиши сообщение в демо-чат…"><button class="primary" id="sendBtn">Отправить</button></div></div><aside class="card recent"><div class="ph">👥 Последние участники</div><div id="participants"></div></aside></div></div><div class="luck">◆ УДАЧИ ВСЕМ УЧАСТНИКАМ ◆</div></section>
 
 <section class="view card" id="v-people" hidden><h2>Участники</h2><div class="row"><input id="addName" placeholder="ник участника" autocomplete="off"><button class="primary" id="addBtn">Добавить</button><button id="clearBtn">Очистить</button></div><textarea id="impTxt" rows="2" placeholder="Импорт: вставь ники списком или через запятую (можно из CSV)"></textarea><button id="impBtn">Импортировать</button><button id="testBtn">🧪 Тест-зрители</button><div id="plist" class="recent" style="margin-top:12px"></div></section><section class="view card" id="v-blacklist" hidden><h2>🚫 Чёрный список <span class="pill off" id="blkN">0</span></h2><p class="hint">Люди из этого списка не попадают в розыгрыш: их сообщения не засчитываются, а если они уже в списке участников — убираются. Если известен Twitch ID человека (он писал в чат или был победителем), смена ника не поможет. Шаблоны вроде <b>bot*</b> задаются в «Настройках».</p><div class="row"><input id="blkName" placeholder="ник" autocomplete="off"><input id="blkWhy" placeholder="причина (необязательно)" autocomplete="off"><button class="primary" id="blkAdd">Добавить</button></div><div class="hint" id="blkMsg" style="margin:6px 0;min-height:19px"></div><textarea id="blkImp" rows="2" placeholder="Импорт: вставь ники списком или через запятую"></textarea><div class="row"><button id="blkImpBtn">Импортировать</button><button id="blkExp">⬇ Экспорт .txt</button><button id="blkClear">Очистить</button></div><div id="blkList" class="recent" style="margin-top:12px"></div></section><section class="view card" id="v-settings" hidden><div class="set"><h2>Настройки</h2><div class="field"><label for="channel">КАНАЛ TWITCH</label><div class="row"><input id="channel" placeholder="например, v1ncent" autocomplete="off"><button class="primary" id="connectBtn">Подключить</button></div></div><div class="field"><label for="prize">ПРИЗ</label><input id="prize" placeholder="что разыгрываем"></div><div class="field"><label for="exclude">ИСКЛЮЧИТЬ НИКИ (ЧЕРЕЗ ЗАПЯТУЮ)</label><input id="exclude" placeholder="боты, модераторы…"></div><div class="field"><label for="minMsg">МИНИМУМ СООБЩЕНИЙ ДЛЯ ДОПУСКА</label><input id="minMsg" type="number" min="1" max="50" value="1"></div><div class="field"><label for="confirmSec">ПОДТВЕРЖДЕНИЕ ПОБЕДИТЕЛЯ, СЕК (0 — ВЫКЛ)</label><input id="confirmSec" type="number" min="0" max="300" value="60"></div><div class="field chk"><label><input type="checkbox" id="onlySub"> Только подписчики</label><label><input type="checkbox" id="noMod"> Исключить модераторов</label><label><input type="checkbox" id="subX2"> Подписчикам двойной шанс</label><label><input type="checkbox" id="repWin" checked> Выпавшие (и реролленные) могут выиграть снова</label></div><div class="field"><label>ЛОГОТИП</label><div class="row"><input type="file" id="logoFile" accept="image/*"><button id="logoClear">Сбросить</button></div></div><div class="field"><label for="roundName">НАЗВАНИЕ РОЗЫГРЫША</label><input id="roundName" autocomplete="off"></div><div class="field"><label for="prizeList">ПРИЗЫ ПО МЕСТАМ (ЧЕРЕЗ ;)</label><input id="prizeList" placeholder="1000 ; 500 ; 100" autocomplete="off"></div><div class="field"><label for="spamSec">АНТИСПАМ: СЕК МЕЖДУ СООБЩЕНИЯМИ ОДНОГО ЧЕЛОВЕКА (0 — ВЫКЛ)</label><input id="spamSec" type="number" min="0" max="60" value="2"></div><div class="field"><label for="badPat">ЧЁРНЫЙ СПИСОК ПО ШАБЛОНУ НИКОВ</label><input id="badPat" placeholder="bot*, *_viewer, user12??" autocomplete="off"></div><div class="field chk"><label><input type="checkbox" id="repBlock" checked> Не считать повторы одной и той же фразы</label></div><p class="hint">Один человек регистрируется в розыгрыше один раз: учитывается его ID в Twitch, смена ника не поможет. В шаблоне * заменяет любое число символов, ? — один символ.</p><div class="field chk"><label><input type="checkbox" id="afkOn"> Не учитывать АФК: кто не писал в чат дольше N минут, не участвует в прокачке</label></div><div class="field"><label for="afkMin">АФК, МИНУТ БЕЗ СООБЩЕНИЙ В ЧАТЕ</label><input id="afkMin" type="number" min="1" max="240" value="5"></div><p class="hint">Работает при подключении к чату Twitch. Считается время последнего сообщения человека в чате (не только ключевого слова). Кто снова написал — сразу возвращается в пул.</p><div class="field"><label for="minAge">МИНИМАЛЬНЫЙ ВОЗРАСТ АККАУНТА, ДНИ (0 — ВЫКЛ, НУЖЕН ВХОД)</label><input id="minAge" type="number" min="0" max="3650" value="0"></div><div class="field"><label for="discordUrl">DISCORD WEBHOOK (ИТОГИ РОЗЫГРЫША)</label><input id="discordUrl" placeholder="https://discord.com/api/webhooks/…" autocomplete="off"></div><div class="field"><label>РЕЗЕРВНАЯ КОПИЯ</label><div class="row"><button id="bkExp">⬇ Экспорт</button><button id="bkImpBtn">⬆ Импорт</button><input type="file" id="bkImp" accept=".json" hidden></div></div><div class="field"><label for="clientId">TWITCH CLIENT ID</label><div class="row"><input id="clientId" placeholder="вставь Client ID" autocomplete="off"><button class="primary" id="twLogin">Войти</button><button id="twOut">Выйти</button></div><p class="hint" id="twState">Вход не выполнен — чат читается анонимно.</p><p class="hint">В приложении на dev.twitch.tv в «OAuth Redirect URLs» должен быть ровно этот адрес: <b id="redirShow"></b></p></div><div class="field chk"><label><input type="checkbox" id="botSay" checked> Бот пишет в чат (старт, победитель)</label><label><input type="checkbox" id="onlyFol"> Только фолловеры (нужны права стримера или модератора)</label></div><div class="field chk"><label><input type="checkbox" id="snd" checked> Звуки и конфетти</label></div><div class="field"><label>ОТТЕНОК ИНТЕРФЕЙСА</label><input id="hue" type="range" min="0" max="360" value="0"></div><div class="field"><label>ПРЕСЕТЫ НАСТРОЕК</label><div class="row"><select id="preset"></select><button id="pLoad">Загрузить</button><button id="pDel">✕</button></div><div class="row" style="margin-top:6px"><input id="pName" placeholder="название пресета"><button id="pSave" class="primary">Сохранить</button></div></div><p class="hint">Команды в чате для стримера и модераторов: <b>!старт</b> и <b>!стоп</b>. Горячая клавиша: F — полный экран. Победитель выбирается только кнопкой «Выбрать победителя». В оверлее наведи мышь на блок (в OBS — «Взаимодействовать»), чтобы увидеть кнопки «Рерол» и «Деп/Вывод».</p><p class="hint">Оверлей для OBS: добавь источник «Браузер» с адресом сайта и <b>?overlay</b> в конце. Он показывает таймер и победителей, но работает только если панель открыта в том же браузере (например, как Custom Browser Dock в OBS). Фильтры подписчиков и модераторов работают только с живым Twitch-чатом.</p><p class="hint">Чат читается анонимно, без авторизации. Участники попадают в список, пока идёт таймер. Стример и популярные боты исключены автоматически. Повторное нажатие «Выбрать победителя» выбирает следующего. Если включена опция «Выпавшие (и реролленные) могут выиграть снова», прошлые победители и реролленные остаются в пуле с теми же шансами, что и остальные; если выключена — не повторяются. В режимах «Кто быстрее» и «Угадай число» победитель определяется не случайно, поэтому там реролл пропускает человека. Внутри одного розыгрыша с несколькими победителями человек не выпадает дважды.</p></div></section>
 <section class="view card" id="v-history" hidden><div class="stats"><div class="stat"><small>УЧАСТНИКОВ</small><b id="statPeople">0</b></div><div class="stat"><small>СООБЩЕНИЙ</small><b id="statMessages">0</b></div><div class="stat"><small>ПОБЕДИТЕЛЕЙ</small><b id="statWinners">0</b></div></div><div class="stats" id="stats2"></div><div class="row" style="margin-bottom:16px"><button id="stReset">↺ Сбросить счётчики</button></div><div class="ph">История победителей <button id="exportBtn" style="margin-left:auto">⬇ CSV</button></div><div id="totals" class="hint"></div><div id="statsX" class="hint"></div><div class="history" id="history">Победителей пока нет</div></section>
