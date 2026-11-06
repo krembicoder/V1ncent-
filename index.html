@@ -229,6 +229,10 @@ background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px
 @media(min-width:761px){.vname{font-size:30px!important}}
 @media(max-width:760px){.vname{display:block!important;font-size:24px!important}}
 .vp-box{box-sizing:border-box;overflow:hidden;max-width:min(1000px,100%)!important}.vp-ov{box-sizing:border-box;overflow:auto}.vp-roul{box-sizing:border-box;max-width:100%}
+.wdrop{margin:10px 0;padding:10px 14px;border-radius:8px;border:1px solid #4dff5c66;background:#0b2a12;text-align:left}
+.wdrop small{display:block;opacity:.65;font-size:11px;letter-spacing:.08em;margin-bottom:3px}
+.wdrop b{font-size:15px}
+.wdrop.ok{border-color:#4dff5c;background:#0d3a17}.wdrop.bad{border-color:#ff5c5c;background:#3a1010}.wdrop.bad b{color:#ffb4b4}.wdrop.new b{color:#d6ffd9}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="crown" viewBox="0 0 64 40"><path d="M5 36 9 11l14 12L32 5l9 18 14-12 4 25Z" fill="#06140a" stroke="#4dff5c" stroke-width="3" stroke-linejoin="round"/><path d="M8 36h48" stroke="#4dff5c" stroke-width="3"/></symbol></svg>
@@ -280,6 +284,7 @@ background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px
 <div class="wtop"><div class="wl"><span class="pill off" id="wStream">● …</span><small id="wStreamNote"></small><div class="wlast"><small>ПОСЛЕДНЕЕ СООБЩЕНИЕ</small><b id="wLast">—</b></div></div><div class="wc"><div class="wav" id="wAvatar"></div><h2 id="wName"></h2></div><span class="pill g" id="wTimer">⏱ —</span></div>
 <div class="wpills"><span>♡ Отслеживает канал: <b id="wFollow">…</b></span><span>🕐 Аккаунт создан: <b id="wCreated">…</b></span><span class="clk" id="wCountBtn" title="Считается по логу бота. Нажми — покажу все сообщения">💬 Сообщений на канале: <b id="wCount">0</b> ›</span></div>
 <div class="wsec" id="wAll" hidden><div class="wst">Все сообщения на канале: <i id="wAllN">0</i> <a id="wTwCard" href="#" target="_blank" rel="noopener" style="float:right;color:#4dff5c;font-weight:600;font-size:13px">Карточка на Twitch ›</a></div><div class="hint" id="wAllNote"></div><div id="wAllList"></div></div>
+<div class="wdrop" id="wDrop" hidden></div>
 <div class="wbtns"><button id="wCard" class="b1">🪪 Twitch User Card</button><button id="wFol" class="b2">⟳ Обновить данные</button><button id="mRe" class="b3">↻ Реролл</button><button id="mKeep" class="b5" hidden>✅ Оставить</button><button id="wBlk" class="b6">🚫 В чёрный список</button></div>
 <button id="wFairBtn" class="b4">🛡 Проверка честности</button><div id="wFair" hidden></div>
 <div class="wsec"><div class="wst">Последние сообщения от победителя: <i id="wMsgsN">0</i></div><div id="wMsgs"></div></div>
@@ -326,12 +331,12 @@ const BOTS=['nightbot','streamelements','streamlabs','moobot','fossabot','wizebo
 const samples=['pixel_fox','m1racle','nekto_live','vanya_cs','darkwolf','sugarbyte','k0smos','frosty'];
 const ST0={runs:0,pumps:0,rerolls:0,confirmed:0,timeouts:0,keeps:0,blocked:0,blkHits:0};
 let blk=[],ST=Object.assign({},ST0),cSig='',bSig='';
-let tw=null,curCh='',lastCmd=0,curW=null,prT=null,msgsN={},lastBy={},bid=null,lastMsg={},lastTxt={},PICS={},banned=new Set(),people=[],messages=0,history=[],seconds=300,tick=null,ws=null,wantWs=false,st=null;
+let tw=null,curCh='',lastCmd=0,curW=null,prT=null,msgsN={},lastBy={},bid=null,lastMsg={},lastTxt={},PICS={},banned=new Set(),people=[],messages=0,history=[],LOG=[],seconds=300,tick=null,ws=null,wantWs=false,st=null;
 const hhmm=()=>new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
 const dur=()=>Math.max(1,Math.min(180,Number($('duration').value)||5));
-function save(){try{people.forEach(p=>{const k=p.login||p.name.toLowerCase();if(seenAt[k])p.seen=seenAt[k]});localStorage.setItem(KEY,JSON.stringify({people,messages,history,banned:[...banned],blk,stat:ST,seconds,s:Object.fromEntries(IDS.map(i=>[i,$(i).type==='checkbox'?$(i).checked:$(i).value]))}))}catch(e){}}
+function save(){try{people.forEach(p=>{const k=p.login||p.name.toLowerCase();if(seenAt[k])p.seen=seenAt[k]});localStorage.setItem(KEY,JSON.stringify({people,messages,history,LOG,banned:[...banned],blk,stat:ST,seconds,s:Object.fromEntries(IDS.map(i=>[i,$(i).type==='checkbox'?$(i).checked:$(i).value]))}))}catch(e){}}
 function saveSoon(){clearTimeout(st);st=setTimeout(save,400)}
-function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;people=d.people||[];people.forEach(p=>{if(p.seen)seenAt[p.login||p.name.toLowerCase()]=p.seen});messages=d.messages||0;history=d.history||[];banned=new Set(d.banned||history.map(w=>w.name.toLowerCase()));blk=Array.isArray(d.blk)?d.blk:[];ST=Object.assign({},ST0,d.stat||{});if(!d.stat||d.stat.pumps==null)ST.pumps=history.length;if(d.seconds>=0)seconds=d.seconds;IDS.forEach(i=>{const v=d.s&&d.s[i];if(v!=null){if($(i).type==='checkbox')$(i).checked=!!v;else $(i).value=v}})}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;people=d.people||[];people.forEach(p=>{if(p.seen)seenAt[p.login||p.name.toLowerCase()]=p.seen});messages=d.messages||0;history=d.history||[];LOG=d.LOG||history.map(h=>({id:'h'+Math.random().toString(36).slice(2,8),name:h.name,login:h.login,time:h.time,prize:h.prize,st:'won'}));banned=new Set(d.banned||history.map(w=>w.name.toLowerCase()));blk=Array.isArray(d.blk)?d.blk:[];ST=Object.assign({},ST0,d.stat||{});if(!d.stat||d.stat.pumps==null)ST.pumps=history.length;if(d.seconds>=0)seconds=d.seconds;IDS.forEach(i=>{const v=d.s&&d.s[i];if(v!=null){if($(i).type==='checkbox')$(i).checked=!!v;else $(i).value=v}})}catch(e){}}
 function rnd(n){const a=new Uint32Array(1),lim=Math.floor(4294967296/n)*n;do{crypto.getRandomValues(a)}while(a[0]>=lim);return a[0]%n}
 function ago(t){const m=Math.floor((Date.now()-(t||Date.now()))/60000);return m<1?'только что':m+' мин назад'}
 function av(n){const d=document.createElement('div');d.className='av';d.textContent=n.slice(0,2).toUpperCase();d.style.background='hsl('+(([...n].reduce((a,c)=>a+c.charCodeAt(0),0)*37)%360)+',55%,38%)';const u=PICS[n.toLowerCase()];if(u){d.style.background='url('+u+') center/cover';d.textContent=''}return d}
@@ -460,7 +465,7 @@ async function proof(pool,w){let hash='—';try{const b=await crypto.subtle.dige
  const m=$('mode').value;return{n:pool.length,idx:pool.indexOf(w)+1,hash,t:new Date().toLocaleString('ru-RU'),how:m==='first'?'побеждает первый написавший':m==='guess'?'побеждает ближайшее к загаданному число':'случайный выбор, crypto.getRandomValues'}}
 function renderWM(){const b=$('wMsgs'),l=curW&&WM[curW.name.toLowerCase()]||[];$('wMsgsN').textContent=l.length;b.innerHTML='';if(!l.length){b.textContent='Ожидание сообщений от победителя…';return}l.slice(-30).forEach(x=>{const d=document.createElement('div');d.textContent=new Date(x.t).toLocaleTimeString('ru-RU')+'  '+x.m;b.append(d)});b.scrollTop=b.scrollHeight}
 function renderHist(e){const prev=history.filter(w=>w!==e&&w.name.toLowerCase()===e.name.toLowerCase()),b=$('wHist');b.innerHTML='';const d=document.createElement('div');d.className='wfirst';
- if(!prev.length)d.innerHTML='<b>✨ Первая победа!</b><br>Это первая победа пользователя в розыгрышах';else d.textContent='Прошлые победы: '+prev.map(w=>w.time+(w.prize?' ('+w.prize+')':'')).join('; ');b.append(d)}
+ const lg=LOG.filter(l=>l.name.toLowerCase()===e.name.toLowerCase()&&l.id!==e.id);if(lg.length){d.innerHTML='<b>Прошлые выпадения:</b><br>'+lg.map(l=>dropText(l).replace(/</g,'&lt;')).join('<br>')}else if(!prev.length)d.innerHTML='<b>✨ Первая победа!</b><br>Это первая победа пользователя в розыгрышах';else d.textContent='Прошлые победы: '+prev.map(w=>w.time+(w.prize?' ('+w.prize+')':'')).join('; ');b.append(d)}
 async function info(e){const L=e.login||'';if(!tw||!L){$('wFollow').textContent=$('wCreated').textContent='нужен вход';return}
  try{const j=await(await fetch('https://api.twitch.tv/helix/users?login='+L,{headers:H()})).json(),u=j.data&&j.data[0];if(curW!==e)return;if(u){$('wCreated').textContent=new Date(u.created_at).toLocaleDateString('ru-RU');PICS[u.login]=u.profile_image_url;$('wAvatar').style.background='url('+u.profile_image_url+') center/cover';e.uid=e.uid||u.id}else $('wCreated').textContent='—'}catch(x){$('wCreated').textContent='—'}
  if(!e.uid||!bid){$('wFollow').textContent='—';return}
@@ -546,13 +551,28 @@ async function spin(type,pool,w){
   if(skip){strip.style.transition='none';strip.style.transform='translateX('+(-x)+'px)'}
  }
  o.querySelector('p').textContent='Победитель: '+w.name;beep(784,.2,'triangle');await sleep(skip?200:900);o.remove()}
+
+function logSet(e,st,reason){let l=LOG.find(x=>x.id===e.id);if(!l){l={id:e.id,name:e.name,login:e.login,time:e.time,prize:e.prize};LOG.unshift(l)}l.st=st;l.reason=st==='rr'?(reason||''):'';l.t=Date.now();save()}
+function askReason(){return new Promise(res=>{
+ const o=vpOv('<h3>Причина реролла</h3><p>Почему меняем победителя?</p>'+
+ '<button class="vp-opt" data-r="Не подходит по правилам">📜 Не подходит по правилам</button>'+
+ '<button class="vp-opt" data-r="КД не прошло">⏳ КД не прошло</button>'+
+ '<button class="vp-opt" data-r="Не успел ответить">⌛ Не успел ответить</button>'+
+ '<button class="vp-opt" data-r="*">✏️ Другая причина…</button>'+
+ '<button class="vp-cancel">Отмена</button>');
+ const done=v=>{o.remove();res(v)};
+ o.querySelector('.vp-cancel').onclick=()=>done(null);
+ o.querySelectorAll('.vp-opt').forEach(b=>b.onclick=()=>{let r=b.dataset.r;if(r==='*'){r=(prompt('Напиши причину реролла')||'').trim();if(!r)return}done(r)})})}
+function dropText(l){const when=l.time||'—';return l.st==='won'?'✅ '+when+' — забрал(а) прокачку'+(l.prize?' ('+l.prize+')':''):'❌ '+when+' — рерольнут(а): '+(l.reason||'причина не указана')}
+function renderDrop(e){const b=$('wDrop'),nm=(e.name||'').toLowerCase(),mine=LOG.filter(l=>l.name.toLowerCase()===nm&&l.id!==e.id);b.hidden=false;b.className='wdrop '+(mine.length?(mine[0].st==='won'?'ok':'bad'):'new');
+ b.innerHTML=mine.length?'<small>ВЫПАДАЛ В ПОСЛЕДНИЙ РАЗ</small><b>'+dropText(mine[0]).replace(/</g,'&lt;')+'</b>':'<small>ВЫПАДАЛ В ПОСЛЕДНИЙ РАЗ</small><b>✨ Выпадает впервые</b>'}
 function showWin(e){curW=e;$('modal').hidden=false;$('wBlk').textContent=isBlk(e.login,e.uid,e.name)?'✓ Уже в чёрном списке':'🚫 В чёрный список';cnts();$('wName').textContent=e.name;$('wFair').hidden=true;const l=(e.login||'').toLowerCase(),pic=PICS[l];$('wAvatar').style.background=pic?'url('+pic+') center/cover':'';
- $('wFollow').textContent='…';$('wCreated').textContent='…';$('wCount').textContent='…';$('wAll').hidden=true;cntFor(e);const lm=lastBy[l];$('wLast').textContent=lm?lm.m+' · '+new Date(lm.t).toLocaleString('ru-RU'):'—';renderWM();renderHist(e);presence(e);info(e)}
+ $('wFollow').textContent='…';$('wCreated').textContent='…';$('wCount').textContent='…';$('wAll').hidden=true;cntFor(e);const lm=lastBy[l];$('wLast').textContent=lm?lm.m+' · '+new Date(lm.t).toLocaleString('ru-RU'):'—';renderWM();renderHist(e);renderDrop(e);presence(e);info(e)}
 async function runPick(mode,cn){
  if(busy)return;busy=true;const n=cn||Math.max(1,+$('winCount').value||1),got=[],prize=$('prize').value.trim(),sec=+$('confirmSec').value||0;
  while(got.length<n){
   const taken=new Set(got.map(x=>x.name.toLowerCase())),pool=poolNow().filter(p=>!taken.has(p.name.toLowerCase()));if(!pool.length)break;
-  const w=draw(pool),e={name:w.name,login:w.login,uid:w.uid,round:$('roundName').value.trim(),prize:(PL()[got.length])||prize,time:new Date().toLocaleString('ru-RU',{dateStyle:'short',timeStyle:'short'}),dep:0,out:0,proof:await proof(pool,w)};
+  const w=draw(pool),e={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:w.name,login:w.login,uid:w.uid,round:$('roundName').value.trim(),prize:(PL()[got.length])||prize,time:new Date().toLocaleString('ru-RU',{dateStyle:'short',timeStyle:'short'}),dep:0,out:0,proof:await proof(pool,w)};
   if(spinMode!=='instant')await spin(spinMode,pool,w);
   showWin(e);beep(660,.15,'triangle');
   if(sec>0){const P=pending={p:w,ok:false,act:null};let to=false;const end=Date.now()+sec*1000;setT({n:w.name,end,state:'run'});$('winnerTitle').textContent='Ждём подтверждения';$('winnerName').textContent=w.name;addMessage('V1ncent',w.name+', напиши в чат за '+sec+' сек, чтобы подтвердить победу!');sayT('msgWin',{e});
@@ -560,9 +580,9 @@ async function runPick(mode,cn){
    if(!P.ok&&!P.act){to=true;setTm('время вышло','r');$('winnerSub').textContent='Время вышло — нажми «Рерол» или «Оставить»';expUI(true);addMessage('V1ncent','Время вышло: ответа от '+w.name+' нет. Нажми «Рерол», чтобы выбрать другого, или «Оставить».');let k=0;while(!P.ok&&!P.act){if(k++%12===0)setT({n:w.name,end,state:'fail'});await sleep(250)}}
    const act=P.act,late=P.ok&&P.at>end,acc=act==='keep'||(P.ok&&act!=='skip'&&act!=='abort');pending=null;expUI(false);setT({n:w.name,end,state:acc?'ok':'fail'});
    if(act==='abort')break;if(to)ST.timeouts++;
-   if(!acc){ST.rerolls++;setTm('рерол','r');declined.add(w.name.toLowerCase());addMessage('V1ncent','Рерол: '+w.name+' пропущен, выбираем заново');sayT('msgFail',{e});await sleep(600);continue}if(P.ok)ST.confirmed++;else ST.keeps++;setTm(P.ok?(late?'✓ ответил (позже)':'✓ ответил'):'✓ оставлен','g')}
+   if(!acc){ST.rerolls++;setTm('рерол','r');declined.add(w.name.toLowerCase());logSet(e,'rr',P.reason||'причина не указана');addMessage('V1ncent','Рерол: '+w.name+' пропущен, выбираем заново');sayT('msgFail',{e});await sleep(600);continue}if(P.ok)ST.confirmed++;else ST.keeps++;setTm(P.ok?(late?'✓ ответил (позже)':'✓ ответил'):'✓ оставлен','g')}
   else setTm('без таймера','g');
-  ST.pumps++;history.unshift(e);banned.add(w.name.toLowerCase());got.push(e);addMessage('V1ncent','Победитель: '+w.name);sayT('msgDone',{e});render()}
+  ST.pumps++;history.unshift(e);logSet(e,'won');banned.add(w.name.toLowerCase());got.push(e);addMessage('V1ncent','Победитель: '+w.name);sayT('msgDone',{e});render()}
  lastPick={mode,entries:got,t:Date.now()};
  $('winnerTitle').textContent=got.length?'Победитель выбран!':'Нет участников';$('winnerName').textContent=got.map(e=>e.name).join(', ');$('winnerSub').textContent=prize?'Приз: '+prize:'';
  const T=$('wTabs');T.innerHTML='';
@@ -572,7 +592,7 @@ function moneyRow(e){const d=document.createElement('div');d.className='mon';d.i
 function moneyChanged(){save();pushWin();totals()}
 function totals(){const s=k=>history.reduce((a,w)=>a+(w[k]||0),0);$('totals').textContent=''}
 function pushWin(){if(!lastPick||!lastPick.entries.length)return;try{localStorage.setItem('v1ncent.win',JSON.stringify({t:Date.now(),items:lastPick.entries.map(e=>({n:e.name,d:e.dep||0,o:e.out||0,p:e.prize||''}))}))}catch(x){}}
-function reroll(){if(pending){pending.act='skip';return}if(busy||!lastPick||!lastPick.entries.length)return;const{mode,entries}=lastPick;ST.rerolls++;ST.pumps=Math.max(0,ST.pumps-entries.length);entries.forEach(e=>{const k=history.indexOf(e);if(k>=0)history.splice(k,1);banned.delete(e.name.toLowerCase());declined.add(e.name.toLowerCase())});render();runPick(mode,entries.length)}
+async function reroll(){if(pending){const r=await askReason();if(!r||!pending)return;pending.reason=r;pending.act='skip';return}if(busy||!lastPick||!lastPick.entries.length)return;const r=await askReason();if(!r||busy||!lastPick)return;const{mode,entries}=lastPick;ST.rerolls++;ST.pumps=Math.max(0,ST.pumps-entries.length);entries.forEach(e=>{logSet(e,'rr',r);const k=history.indexOf(e);if(k>=0)history.splice(k,1);banned.delete(e.name.toLowerCase());declined.add(e.name.toLowerCase())});render();runPick(mode,entries.length)}
 let ac;function beep(f,d,t){if(!$('snd').checked)return;try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type=t||'sine';o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
 function confetti(){if(!$('snd').checked)return;const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99';c.width=innerWidth;c.height=innerHeight;document.body.append(c);const x=c.getContext('2d'),P=[...Array(130)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*250,v:2+Math.random()*4,s:4+Math.random()*6,h:Math.random()*360,d:Math.random()*2-1}));let f=0;(function t(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=p.d*2;x.fillStyle='hsl('+p.h+',80%,60%)';x.fillRect(p.x,p.y,p.s,p.s)});if(++f<220)requestAnimationFrame(t);else c.remove()})()}
 $('mX').onclick=closeWin;$('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeWin()});
