@@ -426,9 +426,10 @@ function connect(){
  if(!/^\w{3,25}$/.test(ch)){setStatus('ВВЕДИ КОРРЕКТНЫЙ КАНАЛ TWITCH','#f0ad4e');return}
  disconnect(true);wantWs=true;$('connectBtn').textContent='Отключить';setStatus('ПОДКЛЮЧЕНИЕ К #'+ch.toUpperCase()+'…','#f0ad4e');
  curCh=ch;if(tw)fetch('https://api.twitch.tv/helix/users?login='+ch,{headers:H()}).then(r=>r.json()).then(j=>{bid=j.data&&j.data[0]&&j.data[0].id}).catch(()=>{});const s=ws=new WebSocket('wss://irc-ws.chat.twitch.tv:443');
- s.onopen=()=>{s.send('CAP REQ :twitch.tv/tags');s.send('PASS '+(tw?'oauth:'+tw.token:'SCHMOOPIIE'));s.send('NICK '+(tw?tw.login:'justinfan'+(10000+rnd(80000))));s.send('JOIN #'+ch)};
+ s.authed=!!tw;s.onopen=()=>{s.send('CAP REQ :twitch.tv/tags');s.send('PASS '+(tw?'oauth:'+tw.token:'SCHMOOPIIE'));s.send('NICK '+(tw?tw.login:'justinfan'+(10000+rnd(80000))));s.send('JOIN #'+ch)};
  s.onmessage=e=>String(e.data).split('\r\n').forEach(l=>{
   if(l.startsWith('PING')){s.send('PONG :tmi.twitch.tv');return}
+  const nt=l.match(/ NOTICE \S+ :(.*)$/);if(nt&&Date.now()-lastSay<20000)addMessage('V1ncent','⚠️ Twitch: '+nt[1].slice(0,180));
   const m=l.match(/^(?:@(\S+) )?:(\w+)!\S+ PRIVMSG #\S+ :(.*)$/);
   if(m){const dn=((m[1]||'').match(/display-name=([^;]*)/)||[])[1];onChat(dn?dn.replace(/\\s/g,' '):m[2],m[3],true,m[2].toLowerCase(),{sub:/(^|;)subscriber=1/.test(m[1]||''),mod:/(^|;)mod=1/.test(m[1]||''),uid:((m[1]||'').match(/(?:^|;)user-id=(\d+)/)||[])[1],col:((m[1]||'').match(/(?:^|;)color=(#[0-9A-Fa-f]{6})/)||[])[1],em:((m[1]||'').match(/(?:^|;)emotes=([^;]*)/)||[])[1]})}
   else if(l.includes('authentication failed')){wantWs=false;$('connectBtn').textContent='Подключить';setStatus('ОШИБКА ВХОДА TWITCH — ВОЙДИ ЗАНОВО','#f87171')}else if(l.includes('tmi.twitch.tv 366 '))setStatus('TWITCH · #'+ch.toUpperCase()+' · ПОДКЛЮЧЕНО','#86e5ae')});
@@ -601,7 +602,25 @@ document.addEventListener('click',()=>{try{ac=ac||new AudioContext()}catch(e){}}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button');if(b)b.blur()});
 render();
 const H=()=>({'Client-Id':tw.cid,Authorization:'Bearer '+tw.token}),redir=()=>location.origin+location.pathname,FOL={};let picT=null,folWarn=false;
-function say(t){if(!tw||!ws||ws.readyState!==1||!$('botSay').checked||!curCh)return;ws.send('PRIVMSG #'+curCh+' :'+String(t).slice(0,450))}
+let sayWarned={},lastSay=0;
+function sayWarn(k,m){if(sayWarned[k])return;sayWarned[k]=1;addMessage('V1ncent','⚠️ '+m)}
+async function say(t){
+ if(!$('botSay').checked)return;
+ if(!tw){sayWarn('login','Бот не пишет в чат Twitch: не выполнен вход. Настройки → «Войти через Twitch».');return}
+ if(!curCh){sayWarn('ch','Бот не пишет в чат Twitch: канал не подключён (кнопка «Подключить»).');return}
+ t=String(t).replace(/[\r\n]+/g,' ').slice(0,450);lastSay=Date.now();
+ const sc=tw.scopes||[];
+ if(bid&&tw.id&&sc.includes('user:write:chat')){
+  try{const r=await fetch('https://api.twitch.tv/helix/chat/messages',{method:'POST',headers:Object.assign({'Content-Type':'application/json'},H()),body:JSON.stringify({broadcaster_id:bid,sender_id:tw.id,message:t})});
+   if(r.ok){const j=await r.json(),d=j.data&&j.data[0];if(d&&d.is_sent===false)sayWarn('drop'+((d.drop_reason&&d.drop_reason.code)||''),'Twitch не принял сообщение: '+((d.drop_reason&&d.drop_reason.message)||'неизвестная причина'));return}
+   let m='';try{const j=await r.json();m=j.message||''}catch(e){}
+   if(r.status===401||r.status===403)sayWarn('h'+r.status,'Twitch не разрешил писать ('+r.status+(m?': '+m:'')+'). Нажми «Выйти» и «Войти» ещё раз и разреши все права.');
+   else sayWarn('h'+r.status,'Ошибка отправки в Twitch ('+r.status+(m?': '+m:'')+')')}
+  catch(e){sayWarn('net','Не удалось отправить в Twitch: нет связи с api.twitch.tv')}
+  return}
+ if(ws&&ws.readyState===1&&ws.authed&&sc.includes('chat:edit')){ws.send('PRIVMSG #'+curCh+' :'+t);return}
+ if(ws&&ws.readyState===1&&!ws.authed){sayWarn('anon','Канал был подключён анонимно. Нажми «Отключить», потом «Подключить» — после входа бот сможет писать.');return}
+ sayWarn('scope','У входа нет права писать в чат. Нажми «Выйти», затем «Войти» ещё раз и разреши все права.')}
 
 function fmtMsg(key,o){o=o||{};const e=o.e||{},nick=e.name||'',login=e.login||nick.toLowerCase(),at=$('atTag').checked?'@':'',
  prize=(e.prize||$('prize').value||'').trim(),kw=$('keyword').value.trim(),any=$('mode').value==='any',
@@ -620,11 +639,11 @@ async function isFol(uid){if(!uid||!bid)return true;if(uid in FOL)return FOL[uid
  if(!r.ok){if(!folWarn){folWarn=true;addMessage('СИСТЕМА','Проверка фолловеров недоступна (нужны права стримера или модератора) — фильтр не применяется')}return true}
  const j=await r.json();FOL[uid]=!!(j.data&&j.data.length)}catch(e){FOL[uid]=true}return FOL[uid]}
 $('redirShow').textContent=redir();
-$('twLogin').onclick=()=>{const c=$('clientId').value.trim();if(!c){$('twState').textContent='Сначала вставь Client ID';return}save();location.href='https://id.twitch.tv/oauth2/authorize?client_id='+encodeURIComponent(c)+'&redirect_uri='+encodeURIComponent(redir())+'&response_type=token&scope='+encodeURIComponent('chat:read chat:edit moderator:read:followers moderator:read:chatters')};
+$('twLogin').onclick=()=>{const c=$('clientId').value.trim();if(!c){$('twState').textContent='Сначала вставь Client ID';return}save();location.href='https://id.twitch.tv/oauth2/authorize?client_id='+encodeURIComponent(c)+'&redirect_uri='+encodeURIComponent(redir())+'&response_type=token&scope='+encodeURIComponent('chat:read chat:edit user:write:chat moderator:read:followers moderator:read:chatters')};
 $('twOut').onclick=()=>{try{localStorage.removeItem('v1ncent.tw')}catch(e){}location.reload()};
 (async()=>{const m=location.hash.match(/access_token=([^&]+)/);if(m){try{localStorage.setItem('v1ncent.tw',JSON.stringify({token:m[1],cid:$('clientId').value.trim()}))}catch(e){}window.history.replaceState(null,'',location.pathname+location.search);show('settings')}
  let s=null;try{s=JSON.parse(localStorage.getItem('v1ncent.tw')||'null')}catch(e){}if(!s)return;
- try{const r=await fetch('https://id.twitch.tv/oauth2/validate',{headers:{Authorization:'OAuth '+s.token}});if(!r.ok)throw 0;const j=await r.json();tw={token:s.token,cid:j.client_id||s.cid,login:j.login,id:j.user_id};$('twState').textContent='Вошёл как '+j.login+'. Теперь нажми «Подключить».';if(!$('channel').value)$('channel').value=j.login;fetchPics()}
+ try{const r=await fetch('https://id.twitch.tv/oauth2/validate',{headers:{Authorization:'OAuth '+s.token}});if(!r.ok)throw 0;const j=await r.json();tw={token:s.token,cid:j.client_id||s.cid,login:j.login,id:j.user_id,scopes:j.scopes||[]};$('twState').textContent='Вошёл как '+j.login+'. Теперь нажми «Подключить».';if(!$('channel').value)$('channel').value=j.login;fetchPics()}
  catch(e){tw=null;$('twState').textContent='Сессия Twitch истекла — нажми «Войти» ещё раз.'}})();
 function clean(login,user,text){
  const ln=login||'',un=user.toLowerCase(),pats=$('badPat').value.toLowerCase().split(/[\s,;]+/).filter(Boolean);
