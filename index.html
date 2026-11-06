@@ -439,7 +439,7 @@ const WM={},p2=n=>String(n).padStart(2,'0');
 function setTm(t,c){const p=$('wTimer');p.textContent='⏱ '+t;p.className='pill '+c}
 function expUI(on){$('keepBtn').hidden=!on;$('mKeep').hidden=!on}
 function closeWin(){$('modal').hidden=true;clearInterval(prT)}
-function openPicker(){if(busy)return;if(!poolNow().length){$('winnerTitle').textContent=people.length?(people.some(isAfk)?'Все участники в АФК':'Новых участников нет'):'Нет участников';$('winnerName').textContent='';$('winnerSub').textContent='Добавь участников или нажми «Перезагрузить»';return}clearInterval(tick);tick=null;seconds=dur()*60;updateClock();save();runPick('instant')}
+function openPicker(){if(busy)return;if(!poolNow().length){$('winnerTitle').textContent=people.length?(people.some(isAfk)?'Все участники в АФК':'Новых участников нет'):'Нет участников';$('winnerName').textContent='';$('winnerSub').textContent='Добавь участников или нажми «Перезагрузить»';return}askType()}
 let lastPick=null;
 async function proof(pool,w){let hash='—';try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pool.map(p=>p.name).sort().join('\n')));hash=[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){}
  const m=$('mode').value;return{n:pool.length,idx:pool.indexOf(w)+1,hash,t:new Date().toLocaleString('ru-RU'),how:m==='first'?'побеждает первый написавший':m==='guess'?'побеждает ближайшее к загаданному число':'случайный выбор, crypto.getRandomValues'}}
@@ -455,6 +455,60 @@ async function presence(e){clearInterval(prT);const L=(e.login||'').toLowerCase(
  const run=async()=>{if(tw&&bid){try{let cur='',found=false;for(let i=0;i<10&&!found;i++){const r=await fetch('https://api.twitch.tv/helix/chat/chatters?broadcaster_id='+bid+'&moderator_id='+tw.id+'&first=1000'+(cur?'&after='+cur:''),{headers:H()});if(!r.ok)throw 0;const j=await r.json();found=(j.data||[]).some(u=>u.user_login===L);cur=j.pagination&&j.pagination.cursor;if(!cur)break}set(found,'По списку чата Twitch, раз в 20 сек. Возможны отклонения.');return}catch(x){}}
   const lm=lastBy[L];set(!!lm&&Date.now()-lm.t<300000,'По активности в чате за 5 мин (для точной проверки войди заново и дай права модератора).')};
  run();prT=setInterval(run,20000)}
+
+let spinMode='instant';
+(function(){const st=document.createElement('style');st.textContent=`
+.vp-ov{position:fixed;inset:0;z-index:9999;background:rgba(3,12,5,.88);display:flex;align-items:center;justify-content:center;padding:16px}
+.vp-box{background:#0b1f0f;border:2px solid #4dff5c;border-radius:10px;box-shadow:0 0 30px #4dff5c55;padding:22px;max-width:520px;width:100%;text-align:center;color:#fff}
+.vp-box h3{margin:0 0 6px;font-size:22px;text-transform:uppercase;letter-spacing:1px}
+.vp-box p{margin:0 0 16px;opacity:.7;font-size:14px}
+.vp-opt{display:block;width:100%;margin:8px 0;padding:14px 12px;font:inherit;font-weight:800;font-size:17px;color:#fff;background:#12361a;border:1px solid #4dff5c88;border-radius:6px;cursor:pointer;text-align:left}
+.vp-opt:hover{background:#1d5a2a;border-color:#4dff5c}
+.vp-opt small{display:block;font-weight:400;opacity:.65;font-size:13px;margin-top:2px}
+.vp-cancel{margin-top:8px;background:none;border:0;color:#fff9;cursor:pointer;font:inherit;text-decoration:underline}
+.vp-wheel{position:relative;width:min(88vw,400px);margin:0 auto}
+.vp-wheel canvas{width:100%;height:auto;display:block}
+.vp-ptr{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid #f5c400;filter:drop-shadow(0 0 6px #f5c400)}
+.vp-roul{position:relative;width:min(92vw,700px);overflow:hidden;border:1px solid #4dff5c88;border-radius:6px;background:#06140a;margin:0 auto}
+.vp-strip{display:flex;gap:8px;padding:12px 0;will-change:transform}
+.vp-card{flex:0 0 150px;height:70px;display:flex;align-items:center;justify-content:center;background:#12361a;border:1px solid #4dff5c55;border-radius:6px;font-weight:800;font-size:16px;padding:0 8px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.vp-mark{position:absolute;left:50%;top:0;bottom:0;width:3px;background:#f5c400;box-shadow:0 0 12px #f5c400;transform:translateX(-50%)}
+`;document.head.append(st)})();
+function vpOv(html){const o=document.createElement('div');o.className='vp-ov';o.innerHTML='<div class="vp-box">'+html+'</div>';document.body.append(o);return o}
+function askType(){
+ const o=vpOv('<h3>Как выбрать победителя?</h3><p>Выбери тип розыгрыша</p>'+
+ '<button class="vp-opt" data-t="instant">⚡ Обычный<small>Победитель сразу, как сейчас</small></button>'+
+ '<button class="vp-opt" data-t="wheel">🎡 Колесо — 7 секунд<small>Колесо фортуны с именами</small></button>'+
+ '<button class="vp-opt" data-t="roulette">🎰 Рулетка — 7 секунд<small>Лента с именами, как в кейсах</small></button>'+
+ '<button class="vp-cancel">Отмена</button>');
+ o.querySelector('.vp-cancel').onclick=()=>o.remove();
+ o.querySelectorAll('.vp-opt').forEach(b=>b.onclick=()=>{spinMode=b.dataset.t;o.remove();if(busy)return;clearInterval(tick);tick=null;seconds=dur()*60;updateClock();save();runPick('instant')})}
+function vpPick(pool,w,n){const names=pool.map(p=>p.name).filter(x=>x!==w.name);for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]]}return names.slice(0,n).concat([w.name])}
+async function spin(type,pool,w){
+ const o=vpOv('<h3>'+(type==='wheel'?'Колесо фортуны':'Рулетка')+'</h3><p>Выбираем победителя…</p><div id="vpStage"></div><button class="vp-cancel">Пропустить</button>');
+ const stage=o.querySelector('#vpStage');let skip=false;o.querySelector('.vp-cancel').onclick=()=>skip=true;
+ const DUR=7000;
+ if(type==='wheel'){
+  const others=vpPick(pool,w,19),list=others.slice(0,-1);list.splice(Math.floor(Math.random()*(list.length+1)),0,w.name);
+  const N=list.length,a=2*Math.PI/N,wi=list.indexOf(w.name);
+  stage.innerHTML='<div class="vp-wheel"><div class="vp-ptr"></div><canvas width="400" height="400"></canvas></div>';
+  const cv=stage.querySelector('canvas'),c=cv.getContext('2d'),cols=['#14532d','#166534','#0f3d1f','#1d6b34'];
+  const drawW=R=>{c.clearRect(0,0,400,400);c.save();c.translate(200,200);c.rotate(R);
+   for(let i=0;i<N;i++){const a0=-Math.PI/2+i*a;c.beginPath();c.moveTo(0,0);c.arc(0,0,190,a0,a0+a);c.closePath();c.fillStyle=cols[i%cols.length];c.fill();c.strokeStyle='#4dff5c';c.lineWidth=2;c.stroke();
+    c.save();c.rotate(a0+a/2);c.fillStyle='#fff';c.font='bold 15px sans-serif';c.textAlign='right';c.textBaseline='middle';let t=list[i];if(t.length>14)t=t.slice(0,13)+'…';c.fillText(t,176,0);c.restore()}
+   c.restore();c.beginPath();c.arc(200,200,26,0,7);c.fillStyle='#0b1f0f';c.fill();c.strokeStyle='#f5c400';c.lineWidth=3;c.stroke()};
+  const target=-(wi+.5)*a+(Math.random()-.5)*a*.6+2*Math.PI*7,t0=performance.now();
+  await new Promise(res=>{const f=now=>{const t=Math.min(1,(now-t0)/DUR);drawW(target*(1-Math.pow(1-t,4)));if(t<1&&!skip)requestAnimationFrame(f);else{drawW(target);res()}};requestAnimationFrame(f)});
+ }else{
+  const WI=52,L=vpPick(pool,w,WI);while(L.length<WI)L.push(pool[Math.floor(Math.random()*pool.length)].name);L.length=WI;L.push(w.name);for(let i=0;i<8;i++)L.push(pool[Math.floor(Math.random()*pool.length)].name);
+  stage.innerHTML='<div class="vp-roul"><div class="vp-strip">'+L.map(n=>'<div class="vp-card"></div>').join('')+'</div><div class="vp-mark"></div></div>';
+  const strip=stage.querySelector('.vp-strip'),box=stage.querySelector('.vp-roul');[...strip.children].forEach((d,i)=>d.textContent=L[i]);
+  const cw=box.clientWidth,x=WI*158+75-cw/2+(Math.random()-.5)*90;
+  strip.style.transform='translateX(0)';void strip.offsetWidth;strip.style.transition='transform '+DUR+'ms cubic-bezier(.12,.7,.1,1)';strip.style.transform='translateX('+(-x)+'px)';
+  const t0=Date.now();while(Date.now()-t0<DUR&&!skip)await sleep(100);
+  if(skip){strip.style.transition='none';strip.style.transform='translateX('+(-x)+'px)'}
+ }
+ o.querySelector('p').textContent='Победитель: '+w.name;beep(784,.2,'triangle');await sleep(skip?200:900);o.remove()}
 function showWin(e){curW=e;$('modal').hidden=false;$('wBlk').textContent=isBlk(e.login,e.uid,e.name)?'✓ Уже в чёрном списке':'🚫 В чёрный список';cnts();$('wName').textContent=e.name;$('wFair').hidden=true;const l=(e.login||'').toLowerCase(),pic=PICS[l];$('wAvatar').style.background=pic?'url('+pic+') center/cover':'';
  $('wFollow').textContent='…';$('wCreated').textContent='…';$('wCount').textContent='…';$('wAll').hidden=true;cntFor(e);const lm=lastBy[l];$('wLast').textContent=lm?lm.m+' · '+new Date(lm.t).toLocaleString('ru-RU'):'—';renderWM();renderHist(e);presence(e);info(e)}
 async function runPick(mode,cn){
@@ -462,6 +516,7 @@ async function runPick(mode,cn){
  while(got.length<n){
   const taken=new Set(got.map(x=>x.name.toLowerCase())),pool=poolNow().filter(p=>!taken.has(p.name.toLowerCase()));if(!pool.length)break;
   const w=draw(pool),e={name:w.name,login:w.login,uid:w.uid,round:$('roundName').value.trim(),prize:(PL()[got.length])||prize,time:new Date().toLocaleString('ru-RU',{dateStyle:'short',timeStyle:'short'}),dep:0,out:0,proof:await proof(pool,w)};
+  if(spinMode!=='instant')await spin(spinMode,pool,w);
   showWin(e);beep(660,.15,'triangle');
   if(sec>0){const P=pending={p:w,ok:false,act:null};let to=false;const end=Date.now()+sec*1000;setT({n:w.name,end,state:'run'});$('winnerTitle').textContent='Ждём подтверждения';$('winnerName').textContent=w.name;addMessage('V1ncent',w.name+', напиши в чат за '+sec+' сек, чтобы подтвердить победу!');
    while(!P.ok&&!P.act&&Date.now()<end){const r=Math.ceil((end-Date.now())/1000);setTm(p2(Math.floor(r/60))+':'+p2(r%60),r>20?'g':'r');$('winnerSub').textContent='Осталось '+p2(Math.floor(r/60))+':'+p2(r%60)+' · можно нажать «Рерол»';await sleep(250)}
