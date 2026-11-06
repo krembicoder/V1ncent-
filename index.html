@@ -224,6 +224,11 @@ background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px
 }
 .vmark{display:none!important}
 @media(min-width:761px){.vname{font-size:27px!important}}
+
+.vname{font-weight:900!important;font-style:italic;letter-spacing:-.02em;background:linear-gradient(180deg,#d6ffd9 5%,#3dff4d 50%,#0f8a19);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px #22e22e99)}
+@media(min-width:761px){.vname{font-size:30px!important}}
+@media(max-width:760px){.vname{display:block!important;font-size:24px!important}}
+.vp-box{box-sizing:border-box;overflow:hidden;max-width:min(1000px,100%)!important}.vp-ov{box-sizing:border-box;overflow:auto}.vp-roul{box-sizing:border-box;max-width:100%}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="crown" viewBox="0 0 64 40"><path d="M5 36 9 11l14 12L32 5l9 18 14-12 4 25Z" fill="#06140a" stroke="#4dff5c" stroke-width="3" stroke-linejoin="round"/><path d="M8 36h48" stroke="#4dff5c" stroke-width="3"/></symbol></svg>
@@ -243,7 +248,7 @@ background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px
 <div class="fx radar"></div>
 <div class="fx txt txt1">DE_V1NCENT</div><div class="fx txt txt2">A SITE</div><div class="fx txt txt3">B SITE</div>
 </div>
-<aside class="side"><div class="side-logo"><svg><use href="#crown"/></svg><div class="vmark">V1</div><div class="vname">V1ncent<span>Play</span></div></div>
+<aside class="side"><div class="side-logo"><svg><use href="#crown"/></svg><div class="vname">V1ncent</div></div>
 <nav class="side-nav"><a class="active" data-v="main"><i>🎁</i>Розыгрыш</a><a data-v="people"><i>👥</i>Участники</a><a data-v="blacklist"><i>🚫</i>Чёрный список</a><a data-v="settings"><i>⚙️</i>Настройки</a><a data-v="history"><i>🕘</i>История</a><a data-v="about"><i>ℹ️</i>О боте</a></nav>
 <div class="side-card"><svg viewBox="0 0 24 24"><path d="M4 2 2 6v14h5v3h3l3-3h4l5-5V2Zm16 12-3 3h-5l-3 3v-3H6V4h14Zm-3-7h-2v5h2Zm-5 0h-2v5h2Z"/></svg><div><b>V1ncent<span style="color:#4dff5c">Play</span></b><small>Giveaway · CS2</small></div></div></aside>
 <main class="content">
@@ -467,11 +472,11 @@ let spinMode='instant';
 .vp-opt small{display:block;font-weight:400;opacity:.65;font-size:13px;margin-top:2px}
 .vp-cancel{margin-top:8px;background:none;border:0;color:#fff9;cursor:pointer;font:inherit;text-decoration:underline}
 .vp-big{max-width:1000px!important}
-.vp-wheel{position:relative;width:min(80vw,470px);margin:6px auto 0}
+.vp-wheel{position:relative;width:100%;max-width:440px;margin:6px auto 0}
 .vp-wheel canvas{position:relative;z-index:2;width:100%;height:auto;display:block;filter:drop-shadow(0 0 18px #4dff5c66)}
 .vp-ptr{position:absolute;z-index:4;left:50%;top:-10px;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:34px solid #f5c400;filter:drop-shadow(0 0 8px #f5c400)}
 .vp-guy{position:absolute;z-index:1;right:-17%;top:-13%;width:44%;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 46%,#000 52%,transparent 72%);mask-image:radial-gradient(circle at 50% 46%,#000 52%,transparent 72%)}
-.vp-rwrap{position:relative;width:min(96vw,960px);margin:0 auto}
+.vp-rwrap{position:relative;width:100%;max-width:900px;margin:0 auto}
 .vp-peek{position:absolute;z-index:1;left:4%;top:0;width:230px;height:150px;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 62% 78% at 50% 42%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 62% 78% at 50% 42%,#000 55%,transparent 100%)}
 .vp-peek img{width:230px;display:block}
 .vp-roul{position:relative;z-index:2;overflow:hidden;border:2px solid #4dff5c;border-radius:10px;background:linear-gradient(#06140a,#0d2a14 50%,#06140a);box-shadow:0 0 26px #4dff5c55,inset 0 0 40px #000}
