@@ -260,6 +260,33 @@ background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px
 .vp-tri{position:absolute;left:50%;transform:translateX(-50%);width:0;height:0;z-index:5;border-left:17px solid transparent;border-right:17px solid transparent;filter:drop-shadow(0 0 8px #4dff6a)}
 .vp-tri.t{top:0;border-top:24px solid #4dff6a}
 .vp-tri.b{bottom:0;border-bottom:24px solid #4dff6a}
+
+/* ===== окно победителя в стиле колеса/рулетки ===== */
+#modal{background:radial-gradient(ellipse at 12% 92%,#10891f88 0,transparent 42%),radial-gradient(ellipse at 92% 92%,#1fd13a66 0,transparent 38%),radial-gradient(ellipse at 50% 55%,#0a3213 0,#020a04 75%);overflow:hidden}
+#modal:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,#2cff4f44 0,transparent 16%),linear-gradient(-135deg,#2cff4f33 0,transparent 14%),repeating-linear-gradient(135deg,#ffffff06 0 2px,transparent 2px 14px)}
+#modal .wbox{position:relative;z-index:1;border:2px solid #2cdc47;border-radius:8px;background:linear-gradient(#051a0b,#020b05);box-shadow:0 0 44px #1fd13a88,inset 0 0 60px #000;scrollbar-width:thin;scrollbar-color:#2cdc47 #031008}
+#modal .wbox .whead{background:linear-gradient(90deg,#0b4a1c,#041a0a 70%);color:#fff;border-bottom:2px solid #2cdc47;font-style:italic;font-weight:900;text-transform:uppercase;letter-spacing:.02em;text-shadow:0 0 12px #1fd13a}
+#modal .wbox .whead small{color:#b8ffbe;text-transform:none;font-style:italic}
+#modal .wbox .whead button{background:#020b05;color:#fff;border:1px solid #2cdc47;border-radius:4px;box-shadow:0 0 10px #1fd13a66}
+#modal .wbox .wc h2{font-style:italic;font-weight:900;text-transform:uppercase;background:linear-gradient(#ffffff,#8bff97 60%,#14c231);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 14px #1fd13a)}
+#modal .wbox .wav{border:4px solid #2cdc47;box-shadow:0 0 0 5px #020b05,0 0 0 7px #1fd13a,0 0 34px #1fd13a}
+#modal .wbox .wpills span,#modal .wbox .wlast{background:linear-gradient(#06210d,#031008);border:1px solid #2cdc4777;border-radius:4px;font-style:italic;font-weight:700;box-shadow:inset 0 0 14px #000}
+#modal .wbox .wlast small,#modal .wbox .wl small{color:#8fbf98;font-style:normal;letter-spacing:.08em}
+#modal .wbox .wsec,#modal .wbox #wFair{background:linear-gradient(#051a0b,#020b05);border:1px solid #2cdc4766;border-radius:6px;box-shadow:inset 0 0 20px #000}
+#modal .wbox .wst{color:#8bff97;font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.03em}
+#modal .wbox .wst i{background:#1fd13a;color:#021006}
+#modal .wbox .wfirst{background:#06210d;border:1px solid #2cdc4755;border-radius:6px}
+#modal .wbox .pill{border-radius:4px;font-style:italic;font-weight:800}
+#modal .wbox .wdrop{border-radius:6px;box-shadow:inset 0 0 18px #000}
+#modal .wbox .wbtns button,#modal .wbox .b4{background-image:none;border:0;border-radius:0;font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:#fff;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,12px 100%,0 50%);text-shadow:0 2px 4px #000;cursor:pointer}
+#modal .wbox .b1{background:linear-gradient(#0e6b24,#06310f);box-shadow:inset 0 0 0 2px #2cdc47}
+#modal .wbox .b2{background:linear-gradient(#0a5a3a,#04271a);box-shadow:inset 0 0 0 2px #2cdc9a}
+#modal .wbox .b3{background:linear-gradient(#a02a10,#3d0f06);box-shadow:inset 0 0 0 2px #ff6a3d}
+#modal .wbox .b5{background:linear-gradient(#27b843,#0c5f1e);box-shadow:inset 0 0 0 2px #8bff97}
+#modal .wbox .b6{background:linear-gradient(#8a1717,#330808);box-shadow:inset 0 0 0 2px #ff5c5c}
+#modal .wbox .b4{background:linear-gradient(#0e6b24,#06310f);box-shadow:inset 0 0 0 2px #2cdc47}
+#modal .wbox .wbtns button:hover,#modal .wbox .b4:hover{filter:brightness(1.25)}
+#modal .wbox .wtabs button{background:#06210d;color:#fff;border:1px solid #2cdc47;border-radius:4px;font-style:italic;font-weight:700;padding:6px 14px}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="crown" viewBox="0 0 64 40"><path d="M5 36 9 11l14 12L32 5l9 18 14-12 4 25Z" fill="#06140a" stroke="#4dff5c" stroke-width="3" stroke-linejoin="round"/><path d="M8 36h48" stroke="#4dff5c" stroke-width="3"/></symbol></svg>
