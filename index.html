@@ -262,8 +262,8 @@ background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px
 .vp-tri.b{bottom:0;border-bottom:24px solid #4dff6a}
 
 /* ===== окно победителя в стиле колеса/рулетки ===== */
-#modal{background:radial-gradient(ellipse at 12% 92%,#10891f88 0,transparent 42%),radial-gradient(ellipse at 92% 92%,#1fd13a66 0,transparent 38%),radial-gradient(ellipse at 50% 55%,#0a3213 0,#020a04 75%);overflow:hidden}
-#modal:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,#2cff4f44 0,transparent 16%),linear-gradient(-135deg,#2cff4f33 0,transparent 14%),repeating-linear-gradient(135deg,#ffffff06 0 2px,transparent 2px 14px)}
+#modal{background:transparent!important;overflow:hidden}
+#modal:before{content:none}
 #modal .wbox{position:relative;z-index:1;border:2px solid #2cdc47;border-radius:8px;background:linear-gradient(#051a0b,#020b05);box-shadow:0 0 44px #1fd13a88,inset 0 0 60px #000;scrollbar-width:thin;scrollbar-color:#2cdc47 #031008}
 #modal .wbox .whead{background:linear-gradient(90deg,#0b4a1c,#041a0a 70%);color:#fff;border-bottom:2px solid #2cdc47;font-style:italic;font-weight:900;text-transform:uppercase;letter-spacing:.02em;text-shadow:0 0 12px #1fd13a}
 #modal .wbox .whead small{color:#b8ffbe;text-transform:none;font-style:italic}
@@ -278,14 +278,15 @@ background:repeating-radial-gradient(circle,transparent 0 34px,#3dff4d 35px 36px
 #modal .wbox .wfirst{background:#06210d;border:1px solid #2cdc4755;border-radius:6px}
 #modal .wbox .pill{border-radius:4px;font-style:italic;font-weight:800}
 #modal .wbox .wdrop{border-radius:6px;box-shadow:inset 0 0 18px #000}
-#modal .wbox .wbtns button,#modal .wbox .b4{background-image:none;border:0;border-radius:0;font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:#fff;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,12px 100%,0 50%);text-shadow:0 2px 4px #000;cursor:pointer}
-#modal .wbox .b1{background:linear-gradient(#0e6b24,#06310f);box-shadow:inset 0 0 0 2px #2cdc47}
-#modal .wbox .b2{background:linear-gradient(#0a5a3a,#04271a);box-shadow:inset 0 0 0 2px #2cdc9a}
-#modal .wbox .b3{background:linear-gradient(#a02a10,#3d0f06);box-shadow:inset 0 0 0 2px #ff6a3d}
-#modal .wbox .b5{background:linear-gradient(#27b843,#0c5f1e);box-shadow:inset 0 0 0 2px #8bff97}
-#modal .wbox .b6{background:linear-gradient(#8a1717,#330808);box-shadow:inset 0 0 0 2px #ff5c5c}
-#modal .wbox .b4{background:linear-gradient(#0e6b24,#06310f);box-shadow:inset 0 0 0 2px #2cdc47}
-#modal .wbox .wbtns button:hover,#modal .wbox .b4:hover{filter:brightness(1.25)}
+#modal .wbox .wbtns button,#modal .wbox .b4{background-image:none;border:0;border-radius:0;font-style:italic;font-weight:900;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(14px,1.5vw,17px);color:#fff;text-shadow:none;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,12px 100%,0 50%);cursor:pointer;transition:filter .15s,transform .15s}
+#modal .wbox .b1{background:#1fd13a;color:#021006}
+#modal .wbox .b2{background:#19d3c5;color:#021a18}
+#modal .wbox .b3{background:#ff4d2e;color:#fff}
+#modal .wbox .b5{background:#7dff6a;color:#031a07}
+#modal .wbox .b6{background:#e11d2e;color:#fff}
+#modal .wbox .b4{background:#1fd13a;color:#021006}
+#modal .wbox .wbtns button:hover,#modal .wbox .b4:hover{filter:brightness(1.15);transform:translateY(-1px)}
+#modal .wbox .wbtns{gap:12px;padding-top:16px}
 #modal .wbox .wtabs button{background:#06210d;color:#fff;border:1px solid #2cdc47;border-radius:4px;font-style:italic;font-weight:700;padding:6px 14px}
 </style></head>
 <body>
